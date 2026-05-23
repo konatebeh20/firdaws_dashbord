@@ -1,0 +1,28 @@
+{
+    "/api/*": {
+        "target": "http://localhost:5000/",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug",
+        "router": {
+            "localhost:4200" : "http://localhost:5000/",
+            "localhost:4300" : "http://localhost:5000/"
+        }
+    },
+    "/oauth/*": {
+        "target": "http://localhost:5000/",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug",
+        "router": {
+            "localhost:4200" : "http://localhost:5000/",
+            "localhost:4300" : "http://localhost:5000/"
+        }
+    },
+    "/wp-json": {
+    "target": "https://insights.firdaws-bel-air-banco.com",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }         
+}
