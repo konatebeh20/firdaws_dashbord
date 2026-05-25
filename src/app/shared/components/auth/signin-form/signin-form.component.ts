@@ -5,7 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { LabelComponent } from '../../form/label/label.component';
 import { CheckboxComponent } from '../../form/input/checkbox.component';
 import { InputFieldComponent } from '../../form/input/input-field.component';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService, AuthResponse } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-signin-form',
@@ -50,11 +50,11 @@ export class SigninFormComponent {
       email: this.email.trim(),
       password: this.password
     }).subscribe({
-      next: (response) => {
+      next: (response: AuthResponse) => {
         this.authService.saveSession(response);
         this.router.navigate(['/']);
       },
-      error: (error) => {
+      error: (error: Error) => {
         this.errorMessage = error?.message || 'Impossible de se connecter. Vérifie tes identifiants.';
       },
       complete: () => {

@@ -59,7 +59,7 @@
             }"
           >
             @if ((isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async)) 
-            { Menu } 
+            { Navigation } 
            @else {
             <svg
               width="1em"
@@ -247,6 +247,7 @@
         <!-- end support section -->
 
         <!-- Others Section -->
+        @if (othersItems.length > 0) {
         <div>
           <h2
             class="mb-4 text-xs uppercase flex leading-[20px] text-gray-400"
@@ -262,7 +263,7 @@
                 (isHovered$ | async) ||
                 (isMobileOpen$ | async)
             ) {
-              Others
+              Ressources
             } @else {
               <svg
                 width="1em"
@@ -447,6 +448,7 @@
             }
           </ul>
         </div>
+        }
         <!-- end other section -->
       </div>
     </nav>
@@ -454,4 +456,77 @@
     <app-sidebar-widget />
     }
   </div>
+
+  <div class="mt-auto border-t border-gray-200 dark:border-white/[0.08]">
+  @if ((isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async)) {
+
+  <div class="flex items-center gap-3 px-4 py-3">
+    <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center
+                font-medium text-sm text-[#3b250b]"
+         style="background: linear-gradient(135deg, #f5d4aa, #c49a6c)">
+      AD
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="text-sm font-medium truncate m-0 text-gray-900 dark:text-white">
+        Administrateur
+      </p>
+      <p class="text-xs m-0 text-gray-500 dark:text-white/50">
+        Super Admin
+      </p>
+    </div>
+
+    <!-- BOUTON LOGOUT — version étendue -->
+    <button
+      title="Déconnexion"
+      (click)="onLogout()"
+      class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
+             border-none cursor-pointer transition-all duration-200
+             bg-gray-100 text-gray-500
+             hover:bg-red-100 hover:text-red-500
+             dark:bg-white/[0.07] dark:text-white/60
+             dark:hover:bg-red-500/20 dark:hover:text-red-400">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+           viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    </button>
+  </div>
+
+  } @else {
+
+  <div class="flex flex-col items-center gap-2 py-3">
+    <div class="w-9 h-9 rounded-full flex items-center justify-center
+                font-medium text-sm text-[#3b250b]"
+         style="background: linear-gradient(135deg, #f5d4aa, #c49a6c)">
+      AD
+    </div>
+
+    <!-- BOUTON LOGOUT — version réduite -->
+    <button
+      title="Déconnexion"
+      (click)="onLogout()"
+      class="w-8 h-8 rounded-lg flex items-center justify-center
+             border-none cursor-pointer transition-all duration-200
+             bg-gray-100 text-gray-500
+             hover:bg-red-100 hover:text-red-500
+             dark:bg-white/[0.07] dark:text-white/60
+             dark:hover:bg-red-500/20 dark:hover:text-red-400">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+           viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    </button>
+  </div>
+
+  }
+</div>
+
+
 </aside>
+

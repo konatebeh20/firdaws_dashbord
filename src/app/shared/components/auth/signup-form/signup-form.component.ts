@@ -67,7 +67,7 @@ export class SignupFormComponent {
         this.successMessage = 'Compte créé avec succès. Tu peux te connecter maintenant.';
         this.router.navigate(['/signin']);
       },
-      error: (error) => {
+      error: (error: Error) => {
         this.errorMessage = error?.message || 'Impossible de créer le compte pour le moment.';
       },
       complete: () => {

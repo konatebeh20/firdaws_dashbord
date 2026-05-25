@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
+
+:host {
+  --primary: #0a4b4a;
+  --primary-dark: #0c5e5c;
+  --primary-light: #e1f5ee;
+  --accent: #c49a6c;
+  --bg: #f0f4f3;
+  --surface: #ffffff;
+  --text-1: #111c1b;
+  --text-2: #4a5e5d;
+  --border: rgba(10,75,74,.10);
+  --radius: 16px;
+  --shadow: 0 4px 20px rgba(10,75,74,.08);
+  display: block;
+}
+
+.panel {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+/* Light / Dark Mode borders and backgrounds */
+:host-context(.dark) .panel {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.panel-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+:host-context(.dark) .panel-header {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.prayer-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  padding: 24px;
+}
+
+.prayer-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 16px;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+
+:host-context(.dark) .prayer-card {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.prayer-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+
+.prayer-card.next-prayer {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  transform: scale(1.03);
+  border-color: transparent;
+  box-shadow: 0 10px 25px -5px rgba(10, 75, 74, 0.4);
+}
+
+.font-arabic {
+  font-family: 'Amiri', serif;
+  font-size: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .prayer-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .prayer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .prayer-grid {
+    grid-template-columns: 1fr;
+  }
+}

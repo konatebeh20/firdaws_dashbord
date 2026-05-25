@@ -55,14 +55,14 @@ export class AuthService {
 
   constructor(private readonly http: HttpClient) {}
 
+  /**
+   * Register a new user account
+   * @param payload User registration data (username, email, password, etc.)
+   * @returns Observable of the authentication response with token and user data
+   */
   register(payload: RegisterPayload): Observable<AuthResponse> {
-    return this.requestWithFallback<AuthResponse>(
-      [
-        `${this.apiBaseUrl}/auth/register`,
-        `${this.apiBaseUrl}/auth/signup`,
-        `${this.apiBaseUrl}/auth/sign_up`,
-        `${this.apiBaseUrl}/auth/create_user`
-      ],
+    return this.http.post<AuthResponse>(
+      `${this.apiBaseUrl}/auth/register`,
       payload
     ).pipe(
       catchError((error) => {
@@ -71,13 +71,14 @@ export class AuthService {
     );
   }
 
+  /**
+   * Authenticate user with email and password
+   * @param payload Login credentials (email, password)
+   * @returns Observable of the authentication response with token and user data
+   */
   login(payload: LoginPayload): Observable<AuthResponse> {
-    return this.requestWithFallback<AuthResponse>(
-      [
-        `${this.apiBaseUrl}/auth/login`,
-        `${this.apiBaseUrl}/auth/signin`,
-        `${this.apiBaseUrl}/auth/sign_in`
-      ],
+    return this.http.post<AuthResponse>(
+      `${this.apiBaseUrl}/auth/login`,
       payload
     ).pipe(
       catchError((error) => {
@@ -86,11 +87,16 @@ export class AuthService {
     );
   }
 
+  /**
+   * Save authentication token and user information to localStorage
+   * @param response Server response containing token and user data
+   * @throws Error if no token is found in the response
+   */
   saveSession(response: AuthResponse): void {
     const token = this.extractToken(response);
 
     if (!token) {
-      throw new Error('Le serveur n’a pas retourné de token d’authentification.');
+      throw new Error('Le serveur n\'a pas retourné de token d\'authentification.');
     }
 
     const user = this.extractUser(response);
@@ -107,6 +113,9 @@ export class AuthService {
     }
   }
 
+  /**
+   * Clear all authentication data from localStorage
+   */
   clearSession(): void {
     localStorage.removeItem('authToken');
     localStorage.removeItem('isAuthenticated');
@@ -114,10 +123,20 @@ export class AuthService {
     localStorage.removeItem('currentUser');
   }
 
+  /**
+   * Check if user is currently authenticated
+   * @returns true if valid auth token exists, false otherwise
+   */
   isAuthenticated(): boolean {
     return !!localStorage.getItem('authToken');
   }
 
+  /**
+   * Normalize HTTP errors to user-friendly error messages
+   * @param error Raw HTTP error from HttpClient
+   * @returns User-friendly Error object
+   * @private
+   */
   private normalizeAuthError(error: unknown): Error {
     const httpError = error as {
       status?: number;
@@ -130,43 +149,35 @@ export class AuthService {
       };
     };
 
+    // Network error: backend is unreachable
     if (httpError?.status === 0) {
       return new Error(
-        'Impossible de joindre l’API. Vérifie que l’URL de l’API est correcte et que le backend est bien démarré.'
+        'Impossible de joindre l\'API. Vérifie que l\'URL de l\'API est correcte et que le backend est bien démarré.'
       );
     }
 
+    // Server error message
     const serverMessage = httpError?.error?.message || httpError?.error?.detail || httpError?.message;
 
     if (serverMessage && serverMessage !== 'Http failure response') {
       return new Error(serverMessage);
     }
 
+    // Generic HTTP status error
     if (httpError?.status) {
       return new Error(`Erreur serveur (${httpError.status}).`);
     }
 
-    return new Error('Impossible de terminer l’opération pour le moment.');
+    // Fallback error
+    return new Error('Impossible de terminer l\'opération pour le moment.');
   }
 
-  private requestWithFallback<T>(urls: string[], body: unknown): Observable<T> {
-    const [firstUrl, ...restUrls] = urls;
-
-    if (!firstUrl) {
-      return throwError(() => new Error('Aucune URL d’authentification disponible.'));
-    }
-
-    return this.http.post<T>(firstUrl, body).pipe(
-      catchError((error: unknown) => {
-        if (restUrls.length === 0) {
-          return throwError(() => error);
-        }
-
-        return this.requestWithFallback<T>(restUrls, body);
-      })
-    );
-  }
-
+  /**
+   * Extract authentication token from various response formats
+   * @param response Server response object
+   * @returns Token string or null if not found
+   * @private
+   */
   private extractToken(response: AuthResponse): string | null {
     return (
       response?.token ||
@@ -183,6 +194,12 @@ export class AuthService {
     );
   }
 
+  /**
+   * Extract user data from various response formats
+   * @param response Server response object
+   * @returns User object or null if not found
+   * @private
+   */
   private extractUser(response: AuthResponse): AuthUser | null {
     return (
       response?.user ||

@@ -1,0 +1,49 @@
+/* Annonces specific styles */
+.annonce-row {
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background .15s;
+}
+.annonce-row:last-child {
+  border-bottom: none;
+}
+.annonce-row:hover {
+  background: var(--surface-2);
+}
+.annonce-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+.annonce-title {
+  font-size: .85rem;
+  font-weight: 500;
+  color: var(--text-1);
+  flex: 1;
+  min-width: 0;
+}
+.annonce-date {
+  font-size: .7rem;
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+.annonce-body {
+  font-size: .78rem;
+  color: var(--text-2);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.prio-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.prio-high { background: #e24b4a; }
+.prio-medium { background: #f39c12; }
+.prio-low { background: #27ae60; }

@@ -1,0 +1,45 @@
+/* Formations specific styles */
+.formation-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background .15s;
+}
+.formation-row:last-child {
+  border-bottom: none;
+}
+.formation-row:hover {
+  background: var(--surface-2);
+}
+.formation-info {
+  flex: 1;
+  min-width: 0;
+}
+.formation-title {
+  font-size: .85rem;
+  font-weight: 500;
+  color: var(--text-1);
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.formation-meta {
+  font-size: .74rem;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.formation-type-pill {
+  font-size: .66rem;
+  padding: 2px 9px;
+  border-radius: 12px;
+  background: var(--gold-light);
+  color: #5a3a0a;
+  border: 1px solid var(--gold-mid);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
