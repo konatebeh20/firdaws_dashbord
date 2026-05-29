@@ -9,17 +9,17 @@
     <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
       <div class="flex items-center justify-between mb-2">
         <div class="w-8 h-8 rounded-lg bg-mosque-light flex items-center justify-center"><i data-lucide="users" class="w-4 h-4 text-mosque-mid"></i>
-        </div><span class="text-[10px] text-green-600 font-medium bg-green-50 px-1.5 py-0.5 rounded">+12%</span>
+        </div>
       </div>
-      <p class="text-xl font-bold text-gray-900">1,247</p>
+      <p class="text-xl font-bold text-gray-900">{{ fidelesCount | number:'1.0-0' }}</p>
       <p class="text-[11px] text-gray-400 mt-0.5">Fidèles</p>
     </div>
     <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
       <div class="flex items-center justify-between mb-2">
         <div class="w-8 h-8 rounded-lg bg-yellow-50 flex items-center justify-center"><i data-lucide="heart" class="w-4 h-4 text-mosque-gold"></i>
-        </div><span class="text-[10px] text-green-600 font-medium bg-green-50 px-1.5 py-0.5 rounded">+8%</span>
+        </div>
       </div>
-      <p class="text-xl font-bold text-gray-900">4.2M</p>
+      <p class="text-xl font-bold text-gray-900">{{ formatCompact(donationsTotal) }}</p>
       <p class="text-[11px] text-gray-400 mt-0.5">Donations FCFA</p>
     </div>
     <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
@@ -27,7 +27,7 @@
         <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center"><i data-lucide="calendar" class="w-4 h-4 text-blue-500"></i>
         </div>
       </div>
-      <p class="text-xl font-bold text-gray-900">18</p>
+      <p class="text-xl font-bold text-gray-900">{{ eventsCount }}</p>
       <p class="text-[11px] text-gray-400 mt-0.5">Événements</p>
     </div>
     <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
@@ -35,7 +35,7 @@
         <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center"><i data-lucide="video" class="w-4 h-4 text-purple-500"></i>
         </div>
       </div>
-      <p class="text-xl font-bold text-gray-900">42</p>
+      <p class="text-xl font-bold text-gray-900">{{ videosCount }}</p>
       <p class="text-[11px] text-gray-400 mt-0.5">Vidéos</p>
     </div>
     <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 col-span-2 lg:col-span-1">
@@ -43,7 +43,7 @@
         <div class="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center"><i data-lucide="megaphone" class="w-4 h-4 text-orange-500"></i>
         </div>
       </div>
-      <p class="text-xl font-bold text-gray-900">5</p>
+      <p class="text-xl font-bold text-gray-900">{{ annoncesCount }}</p>
       <p class="text-[11px] text-gray-400 mt-0.5">Annonces actives</p>
     </div>
   </div>
@@ -54,49 +54,38 @@
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
       <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2"><i data-lucide="moon" class="w-4 h-4 text-mosque-mid"></i> Horaires des Prières</h3>
       <div class="space-y-2" id="prayerList">
-        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-          <div class="flex items-center gap-3">
-            <span class="font-arabic text-sm text-gray-600">الفجر</span> <span class="text-xs text-gray-400">Fajr</span>
-          </div><span class="text-sm font-semibold text-gray-700">05:30</span>
-        </div>
-        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-          <div class="flex items-center gap-3">
-            <span class="font-arabic text-sm text-gray-600">الظهر</span> <span class="text-xs text-gray-400">Dhuhr</span>
-          </div><span class="text-sm font-semibold text-gray-700">13:15</span>
-        </div>
-        <div class="flex items-center justify-between p-3 rounded-xl prayer-highlight text-white">
-          <div class="flex items-center gap-3">
-            <span class="font-arabic text-sm">العصر</span> <span class="text-xs text-white/70">Asr</span>
+        <ng-container *ngIf="prayerTimes.length; else prayerEmpty">
+          <div *ngFor="let p of prayerTimes"
+            class="flex items-center justify-between p-3 rounded-xl"
+            [ngClass]="p.name === nextPrayerName ? 'prayer-highlight text-white' : 'bg-gray-50'">
+            <div class="flex items-center gap-3">
+              <span class="font-arabic text-sm" [ngClass]="p.name === nextPrayerName ? '' : 'text-gray-600'">{{ p.arabic }}</span>
+              <span class="text-xs" [ngClass]="p.name === nextPrayerName ? 'text-white/70' : 'text-gray-400'">{{ p.name }}</span>
+            </div>
+            <div class="text-right">
+              <span class="text-sm font-semibold" [ngClass]="p.name === nextPrayerName ? '' : 'text-gray-700'">{{ p.time }}</span>
+              <p *ngIf="p.name === nextPrayerName" class="text-[9px] text-white/60">Prochaine</p>
+            </div>
           </div>
-          <div class="text-right">
-            <span class="text-sm font-semibold">16:45</span>
-            <p class="text-[9px] text-white/60">Prochaine</p>
-          </div>
-        </div>
-        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-          <div class="flex items-center gap-3">
-            <span class="font-arabic text-sm text-gray-600">المغرب</span> <span class="text-xs text-gray-400">Maghrib</span>
-          </div><span class="text-sm font-semibold text-gray-700">19:20</span>
-        </div>
-        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-          <div class="flex items-center gap-3">
-            <span class="font-arabic text-sm text-gray-600">العشاء</span> <span class="text-xs text-gray-400">Isha</span>
-          </div><span class="text-sm font-semibold text-gray-700">20:45</span>
-        </div>
+        </ng-container>
+        <ng-template #prayerEmpty>
+          <p class="text-xs text-gray-400 py-6 text-center">Chargement des horaires…</p>
+        </ng-template>
       </div>
+      <p *ngIf="prayerLocation" class="text-[10px] text-gray-400 mt-3 flex items-center gap-1">
+        <i data-lucide="map-pin" class="w-3 h-3"></i> {{ prayerLocation }}
+      </p>
     </div>
 
     <!-- Chart -->
     <div class="lg:col-span-2 bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="font-bold text-gray-900 flex items-center gap-2"><i data-lucide="trending-up" class="w-4 h-4 text-mosque-mid"></i> Évolution Donations</h3><span class="text-xs text-gray-400">6 derniers mois</span>
+        <h3 class="font-bold text-gray-900 flex items-center gap-2"><i data-lucide="trending-up" class="w-4 h-4 text-mosque-mid"></i> Évolution Donations</h3><span class="text-xs text-gray-400">Par mois</span>
       </div>
-      <div class="max-h-[220px]">
-        <app-monthly-sales-chart></app-monthly-sales-chart>
+      <div class="max-h-[260px]">
+        <app-monthly-sales-chart [data]="chartData" [categories]="chartCategories" seriesName="Donations (FCFA)"></app-monthly-sales-chart>
       </div>
-      <div class="mt-3 flex items-center gap-4 text-xs text-gray-400">
-        <span class="flex items-center gap-1"><span class="w-2 h-2 bg-mosque-mid rounded-full"></span> Régulier</span> <span class="flex items-center gap-1"><span class="w-2 h-2 bg-mosque-gold rounded-full"></span> Ramadan</span>
-      </div>
+      <p *ngIf="!chartData.length" class="text-xs text-gray-400 text-center mt-2">Aucune donation enregistrée pour le moment.</p>
     </div>
   </div>
 
@@ -106,33 +95,16 @@
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
       <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4 text-blue-500"></i> Événements Récents</h3>
       <div class="space-y-3">
-        <div class="flex items-start gap-3 p-3 rounded-xl bg-gray-50">
+        <div *ngFor="let e of recentEvents" class="flex items-start gap-3 p-3 rounded-xl bg-gray-50">
           <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-            <span class="text-xs font-bold text-blue-600">28</span>
+            <span class="text-xs font-bold text-blue-600">{{ eventDay(e.event_date) }}</span>
           </div>
           <div>
-            <p class="text-sm font-medium text-gray-800">Conférence sur le Tawhid</p>
-            <p class="text-[11px] text-gray-400 mt-0.5">28 Juin 2025 • 20h00</p>
+            <p class="text-sm font-medium text-gray-800">{{ e.title }}</p>
+            <p class="text-[11px] text-gray-400 mt-0.5">{{ eventDateLabel(e.event_date) }}</p>
           </div>
         </div>
-        <div class="flex items-start gap-3 p-3 rounded-xl bg-gray-50">
-          <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
-            <span class="text-xs font-bold text-green-600">02</span>
-          </div>
-          <div>
-            <p class="text-sm font-medium text-gray-800">Journée portes ouvertes</p>
-            <p class="text-[11px] text-gray-400 mt-0.5">02 Juil 2025 • 09h00</p>
-          </div>
-        </div>
-        <div class="flex items-start gap-3 p-3 rounded-xl bg-gray-50">
-          <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
-            <span class="text-xs font-bold text-purple-600">10</span>
-          </div>
-          <div>
-            <p class="text-sm font-medium text-gray-800">Cours de Tajwid - Niveau 2</p>
-            <p class="text-[11px] text-gray-400 mt-0.5">10 Juil 2025 • 17h00</p>
-          </div>
-        </div>
+        <p *ngIf="!recentEvents.length" class="text-xs text-gray-400 py-6 text-center">Aucun événement à venir.</p>
       </div>
     </div>
 
@@ -140,39 +112,21 @@
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
       <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2"><i data-lucide="heart" class="w-4 h-4 text-mosque-gold"></i> Donations Récentes</h3>
       <div class="space-y-3">
-        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
+        <div *ngFor="let d of visibleDonations" class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 rounded-full bg-mosque-gold/20 flex items-center justify-center text-[10px] font-bold text-mosque-gold">
-              AD
+              {{ initials(d.donateur) }}
             </div>
             <div>
-              <p class="text-sm font-medium text-gray-800">Amadou Diallo</p>
-              <p class="text-[10px] text-gray-400">25 Juin 2025</p>
+              <p class="text-sm font-medium text-gray-800">{{ d.donateur }}</p>
+              <p class="text-[10px] text-gray-400">
+                {{ donationDateLabel(d.date) }}
+                <span *ngIf="d.type === 'support'" class="ml-1 px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600 font-medium">Support</span>
+              </p>
             </div>
-          </div><span class="text-sm font-bold text-mosque-mid">150,000 F</span>
+          </div><span class="text-sm font-bold text-mosque-mid">{{ formatAmount(d.montant) }} F</span>
         </div>
-        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-[10px] font-bold text-blue-600">
-              FK
-            </div>
-            <div>
-              <p class="text-sm font-medium text-gray-800">Fatou Keita</p>
-              <p class="text-[10px] text-gray-400">24 Juin 2025</p>
-            </div>
-          </div><span class="text-sm font-bold text-mosque-mid">75,000 F</span>
-        </div>
-        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-[10px] font-bold text-green-600">
-              MS
-            </div>
-            <div>
-              <p class="text-sm font-medium text-gray-800">Moussa Sylla</p>
-              <p class="text-[10px] text-gray-400">23 Juin 2025</p>
-            </div>
-          </div><span class="text-sm font-bold text-mosque-mid">250,000 F</span>
-        </div>
+        <p *ngIf="!visibleDonations.length" class="text-xs text-gray-400 py-6 text-center">Aucune donation enregistrée.</p>
       </div>
     </div>
   </div>
@@ -183,30 +137,15 @@
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
       <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4 text-orange-500"></i> Documents</h3>
       <div class="space-y-2">
-        <div class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition cursor-pointer">
-          <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center"><span class="text-[10px] font-bold text-red-500">PDF</span>
+        <div *ngFor="let doc of recentDocuments" class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+          <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center"><span class="text-[10px] font-bold text-red-500">{{ (doc.type || 'DOC') | uppercase }}</span>
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-xs font-medium text-gray-700 truncate">Cours Fiqh - Chapitre 3</p>
-            <p class="text-[10px] text-gray-400">2.4 MB</p>
+            <p class="text-xs font-medium text-gray-700 truncate">{{ doc.title }}</p>
+            <p class="text-[10px] text-gray-400">{{ doc.file_size || doc.size || '—' }}</p>
           </div>
         </div>
-        <div class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition cursor-pointer">
-          <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center"><span class="text-[10px] font-bold text-blue-500">QZ</span>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-xs font-medium text-gray-700 truncate">Quiz Sourate Al-Baqara</p>
-            <p class="text-[10px] text-gray-400">15 questions</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition cursor-pointer">
-          <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center"><span class="text-[10px] font-bold text-green-500">PDF</span>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-xs font-medium text-gray-700 truncate">Guide du pèlerinage</p>
-            <p class="text-[10px] text-gray-400">5.1 MB</p>
-          </div>
-        </div>
+        <p *ngIf="!recentDocuments.length" class="text-xs text-gray-400 py-6 text-center">Aucun document.</p>
       </div>
     </div>
 
@@ -214,30 +153,16 @@
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
       <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2"><i data-lucide="video" class="w-4 h-4 text-purple-500"></i> Vidéos</h3>
       <div class="space-y-2">
-        <div class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition cursor-pointer">
-          <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center"><i data-lucide="play" class="w-3 h-3 text-purple-500"></i>
+        <a *ngFor="let v of recentVideos" [href]="v.videoUrl" target="_blank" rel="noopener"
+          class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+          <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0"><i data-lucide="play" class="w-3 h-3 text-purple-500"></i>
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-xs font-medium text-gray-700 truncate">Khutba du Vendredi 20/06</p>
-            <p class="text-[10px] text-gray-400">45 min</p>
+            <p class="text-xs font-medium text-gray-700 truncate">{{ v.title }}</p>
+            <p class="text-[10px] text-gray-400 truncate">{{ v.playlistTitle || v.date }}</p>
           </div>
-        </div>
-        <div class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition cursor-pointer">
-          <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center"><i data-lucide="play" class="w-3 h-3 text-purple-500"></i>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-xs font-medium text-gray-700 truncate">Les piliers de l'Islam</p>
-            <p class="text-[10px] text-gray-400">32 min</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition cursor-pointer">
-          <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center"><i data-lucide="play" class="w-3 h-3 text-purple-500"></i>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-xs font-medium text-gray-700 truncate">Formation: Lecture Coran</p>
-            <p class="text-[10px] text-gray-400">1h 15min</p>
-          </div>
-        </div>
+        </a>
+        <p *ngIf="!recentVideos.length" class="text-xs text-gray-400 py-6 text-center">Aucune vidéo.</p>
       </div>
     </div>
 
@@ -245,55 +170,17 @@
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
       <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2"><i data-lucide="users" class="w-4 h-4 text-mosque-mid"></i> Fidèles Actifs</h3>
       <div class="space-y-2">
-        <div class="flex items-center gap-3 p-2 rounded-lg">
+        <div *ngFor="let f of activeFideles" class="flex items-center gap-3 p-2 rounded-lg">
           <div class="w-7 h-7 rounded-full bg-mosque-deep/10 flex items-center justify-center text-[9px] font-bold text-mosque-deep">
-            IB
+            {{ f.initials }}
           </div>
           <div class="flex-1">
-            <p class="text-xs font-medium text-gray-700">Ibrahim Bah</p>
-            <p class="text-[10px] text-gray-400">Membre depuis 2019</p>
+            <p class="text-xs font-medium text-gray-700">{{ f.name }}</p>
+            <p class="text-[10px] text-gray-400">{{ f.since }}</p>
           </div>
         </div>
-        <div class="flex items-center gap-3 p-2 rounded-lg">
-          <div class="w-7 h-7 rounded-full bg-mosque-deep/10 flex items-center justify-center text-[9px] font-bold text-mosque-deep">
-            OC
-          </div>
-          <div class="flex-1">
-            <p class="text-xs font-medium text-gray-700">Oumar Camara</p>
-            <p class="text-[10px] text-gray-400">Membre depuis 2020</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-3 p-2 rounded-lg">
-          <div class="w-7 h-7 rounded-full bg-mosque-deep/10 flex items-center justify-center text-[9px] font-bold text-mosque-deep">
-            KT
-          </div>
-          <div class="flex-1">
-            <p class="text-xs font-medium text-gray-700">Khadija Touré</p>
-            <p class="text-[10px] text-gray-400">Membre depuis 2021</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-3 p-2 rounded-lg">
-          <div class="w-7 h-7 rounded-full bg-mosque-deep/10 flex items-center justify-center text-[9px] font-bold text-mosque-deep">
-            AS
-          </div>
-          <div class="flex-1">
-            <p class="text-xs font-medium text-gray-700">Aïssatou Sow</p>
-            <p class="text-[10px] text-gray-400">Membre depuis 2022</p>
-          </div>
-        </div>
+        <p *ngIf="!activeFideles.length" class="text-xs text-gray-400 py-6 text-center">Aucun fidèle enregistré.</p>
       </div>
-    </div>
-  </div>
-
-  <!-- Quick Actions -->
-  <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 fade-up fade-up-5">
-    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2"><i data-lucide="zap" class="w-4 h-4 text-mosque-gold"></i> Actions Rapides</h3>
-    <div class="flex flex-wrap gap-2">
-      <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-mosque-deep text-white text-xs font-medium hover:bg-mosque-mid transition"> <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Ajouter un fidèle </button>
-      <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-medium hover:bg-blue-700 transition"> <i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i> Créer un événement </button>
-      <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-mosque-gold text-mosque-deep text-xs font-medium hover:bg-yellow-400 transition"> <i data-lucide="megaphone" class="w-3.5 h-3.5"></i> Publier une annonce </button>
-      <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-500 text-white text-xs font-medium hover:bg-orange-600 transition"> <i data-lucide="file-plus" class="w-3.5 h-3.5"></i> Ajouter un document </button>
-      <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600 text-white text-xs font-medium hover:bg-purple-700 transition"> <i data-lucide="video" class="w-3.5 h-3.5"></i> Ajouter une vidéo </button>
     </div>
   </div>
 </div>

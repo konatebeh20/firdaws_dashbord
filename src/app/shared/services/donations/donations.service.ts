@@ -1,17 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 
 export interface Don {
   id?: number;
   donateur: string;
   phone?: string;
-  type: 'Sadaqah' | 'Zakat' | 'Projet' | 'Fitr';
+  type: string;
   canal: 'Physique' | 'En ligne';
   montant: number;
   date?: string;
+}
+
+export interface FinanceStats {
+  global_total: number;
+  by_category: { [category: string]: number };
+}
+
+export interface MonthlyDonation {
+  month: string;
+  total: number;
 }
 
 // interface ApiResponse {
@@ -69,6 +79,25 @@ export class DonationsService {
         }
         return response;
       })
+    );
+  }
+
+  // GET : Statistiques financières (total global + par catégorie)
+  getFinanceStats(): Observable<FinanceStats> {
+    return this.http.get<any>(`${this.apiUrl}/getfinancestats`).pipe(
+      map(response => ({
+        global_total: response?.global_total ?? 0,
+        by_category: response?.by_category ?? {}
+      })),
+      catchError(() => of({ global_total: 0, by_category: {} }))
+    );
+  }
+
+  // GET : Évolution des dons par mois (pour le graphique)
+  getDonationsByMonth(): Observable<MonthlyDonation[]> {
+    return this.http.get<any>(`${this.apiUrl}/by-month`).pipe(
+      map(response => (response?.data ?? []) as MonthlyDonation[]),
+      catchError(() => of([]))
     );
   }
 }
