@@ -1,26 +1,36 @@
 
-import { Component } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { NgApexchartsModule, ApexAxisChartSeries, ApexChart, ApexXAxis, ApexPlotOptions, ApexDataLabels, ApexStroke, ApexLegend, ApexYAxis, ApexGrid, ApexFill, ApexTooltip } from 'ng-apexcharts';
-import { DropdownComponent } from '../../ui/dropdown/dropdown.component';
-import { DropdownItemComponent } from '../../ui/dropdown/dropdown-item/dropdown-item.component';
 
 @Component({
   selector: 'app-monthly-sales-chart',
   standalone: true,
   imports: [
-    NgApexchartsModule,
-    DropdownComponent,
-    DropdownItemComponent
+    NgApexchartsModule
 ],
   templateUrl: './monthly-sales-chart.component.html'
 })
-export class MonthlySalesChartComponent {
+export class MonthlySalesChartComponent implements OnChanges {
+  /** Données dynamiques optionnelles (depuis la base de données) */
+  @Input() data?: number[];
+  @Input() categories?: string[];
+  @Input() seriesName = 'Donations';
+
   public series: ApexAxisChartSeries = [
     {
-      name: 'Sales',
+      name: 'Donations',
       data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
     },
   ];
+
+  ngOnChanges(): void {
+    if (this.data && this.data.length) {
+      this.series = [{ name: this.seriesName, data: this.data }];
+    }
+    if (this.categories && this.categories.length) {
+      this.xaxis = { ...this.xaxis, categories: this.categories };
+    }
+  }
   public chart: ApexChart = {
     fontFamily: 'Outfit, sans-serif',
     type: 'bar',
@@ -63,14 +73,4 @@ export class MonthlySalesChartComponent {
     y: { formatter: (val: number) => `${val}` },
   };
   public colors: string[] = ['#465fff'];
-
-  isOpen = false;
-
-  toggleDropdown() {
-    this.isOpen = !this.isOpen;
-  }
-
-  closeDropdown() {
-    this.isOpen = false;
-  }
 }
