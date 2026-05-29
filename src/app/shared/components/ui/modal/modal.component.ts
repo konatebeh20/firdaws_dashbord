@@ -10,6 +10,7 @@ import {
 
 @Component({
   selector: 'app-modal',
+  standalone: true,
   imports: [
     CommonModule,
   ],

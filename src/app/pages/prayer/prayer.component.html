@@ -1,0 +1,452 @@
+<div class="p-5 sm:p-6">
+  <div
+    class="mb-6 flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:flex-row md:items-center md:justify-between"
+  >
+    <div>
+      <h2 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
+        Gestion des utilisateurs
+      </h2>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Administrateurs, super administrateurs, comité de gestion et comptes du site public
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-medium text-white shadow-theme-xs transition hover:bg-brand-600"
+      (click)="openModal()"
+    >
+      <i class="bi bi-plus-lg"></i>
+      Ajouter un utilisateur
+    </button>
+  </div>
+
+  <!-- <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div
+      class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
+    >
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Total Staff</p>
+          <h3 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90">
+            {{ admins.length }}
+          </h3>
+        </div>
+
+        <div
+          class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-500/20"
+        >
+          <i class="bi bi-people-fill text-xl text-blue-600"></i>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
+    >
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Admins</p>
+          <h3 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90">
+            {{ getRoleCount('Admin') }}
+          </h3>
+        </div>
+
+        <div
+          class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 dark:bg-green-500/20"
+        >
+          <i class="bi bi-shield-check text-xl text-green-600"></i>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
+    >
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Super Admin
+          </p>
+          <h3 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90">
+            {{ getRoleCount('Super Admin') }}
+          </h3>
+        </div>
+
+        <div
+          class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-500/20"
+        >
+          <i class="bi bi-stars text-xl text-purple-600"></i>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
+    >
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Comité
+          </p>
+          <h3 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90">
+            {{ getRoleCount('Comité') }}
+          </h3>
+        </div>
+
+        <div
+          class="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100 dark:bg-orange-500/20"
+        >
+          <i class="bi bi-person-workspace text-xl text-orange-600"></i>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+  
+  <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Total Comptes</p>
+        <h3 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90">
+          {{ getTotalStaff() }}
+        </h3>
+      </div>
+      <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-500/20">
+        <i class="bi bi-people-fill text-xl text-blue-600"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Admins</p>
+        <h3 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90">
+          {{ getRoleCount('Admin') }}
+        </h3>
+      </div>
+      <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 dark:bg-green-500/20">
+        <i class="bi bi-shield-check text-xl text-green-600"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Super Admin</p>
+        <h3 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90">
+          {{ getRoleCount('Super Admin') }}
+        </h3>
+      </div>
+      <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-500/20">
+        <i class="bi bi-stars text-xl text-purple-600"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Comité</p>
+        <h3 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90">
+          {{ getRoleCount('Comité') }}
+        </h3>
+      </div>
+      <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100 dark:bg-orange-500/20">
+        <i class="bi bi-person-workspace text-xl text-orange-600"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Utilisateurs</p>
+        <h3 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90">
+          {{ getRoleCount('User') }}
+        </h3>
+      </div>
+      <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 dark:bg-cyan-500/20">
+        <i class="bi bi-mortarboard-fill text-xl text-cyan-600"></i>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+  <div class="space-y-8">
+    
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="border-b border-gray-200 px-5 py-4 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-transparent">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
+            Équipe de Gestion & Administration (Staff)
+          </h3>
+          <p class="text-xs text-gray-500">Comptes ayant accès au dashboard</p>
+        </div>
+        <span class="px-2.5 py-1 text-xs font-medium rounded-md bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400 border border-green-200/50">
+          {{ admins.length }} membres
+        </span>
+      </div>
+
+      <div *ngIf="isLoadingAdmins" class="space-y-4 p-5">
+        <div *ngFor="let item of skeletons" class="animate-pulse flex items-center justify-between rounded-xl border border-gray-100 p-4 dark:border-gray-800">
+          <div class="flex items-center gap-4">
+            <div class="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+            <div class="space-y-2"><div class="h-4 w-40 rounded bg-gray-200 dark:bg-gray-700"></div></div>
+          </div>
+          <div class="h-8 w-24 rounded-lg bg-gray-200 dark:bg-gray-700"></div>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoadingAdmins" class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead>
+            <tr class="border-b border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-white/[0.02]">
+              <th class="px-5 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">Administrateur</th>
+              <th class="px-5 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">Rôle</th>
+              <th class="px-5 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">Email</th>
+              <th class="px-5 py-4 text-right text-sm font-medium text-gray-500 dark:text-gray-400">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let admin of admins" class="border-b border-gray-100 transition hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-white/[0.02]">
+              <td class="px-5 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-11 w-11 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-600 dark:bg-brand-500/20">
+                    {{ admin.username.charAt(0) }}
+                  </div>
+                  <div>
+                    <h4 class="font-medium text-gray-800 dark:text-white/90">{{ admin.username }}</h4>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">ID #{{ admin.id }}</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-5 py-4">
+                <span class="inline-flex rounded-full px-3 py-1 text-xs font-medium" [ngClass]="getRoleClass(admin.role)">
+                  {{ admin.role }}
+                </span>
+              </td>
+              <td class="px-5 py-4 text-sm text-gray-600 dark:text-gray-300">{{ admin.email }}</td>
+              <td class="px-5 py-4">
+                <div class="flex items-center justify-end gap-2">
+                  <button type="button" (click)="editAdmin(admin)" class="rounded-lg bg-blue-50 px-3 py-2 text-sm text-blue-600 transition hover:bg-blue-100"><i class="bi bi-pencil-square"></i></button>
+                  <button type="button" (click)="deleteAdmin(admin.id)" class="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600 transition hover:bg-red-100"><i class="bi bi-trash"></i></button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="admins.length === 0">
+              <td colspan="4" class="px-5 py-10 text-center text-gray-500">
+                <i class="bi bi-people text-5xl text-gray-300 dark:text-gray-600"></i>
+                <p class="mt-3 text-gray-500 dark:text-gray-400">Aucun administrateur trouvé</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="border-b border-gray-200 px-5 py-4 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-transparent">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
+            Utilisateurs du Site Public (Clients / Visiteurs inscrits)
+          </h3>
+          <p class="text-xs text-gray-500">Comptes créés depuis l'interface publique</p>
+        </div>
+        <span class="px-2.5 py-1 text-xs font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 border border-blue-200/50">
+          {{ users.length }} inscrits
+        </span>
+      </div>
+
+      <div *ngIf="isLoadingUsers" class="space-y-4 p-5">
+        <div *ngFor="let item of skeletons" class="animate-pulse flex items-center justify-between rounded-xl border border-gray-100 p-4 dark:border-gray-800">
+          <div class="flex items-center gap-4">
+            <div class="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+            <div class="space-y-2"><div class="h-4 w-40 rounded bg-gray-200 dark:bg-gray-700"></div></div>
+          </div>
+          <div class="h-8 w-24 rounded-lg bg-gray-200 dark:bg-gray-700"></div>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoadingUsers" class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead>
+            <tr class="border-b border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-white/[0.02]">
+              <th class="px-5 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">Utilisateur</th>
+              <th class="px-5 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">Rôle</th>
+              <th class="px-5 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">Email</th>
+              <th class="px-5 py-4 text-right text-sm font-medium text-gray-500 dark:text-gray-400">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users" class="border-b border-gray-100 transition hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-white/[0.02]">
+              <td class="px-5 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-11 w-11 items-center justify-center rounded-full bg-blue-100 text-sm font-semibold text-blue-600 dark:bg-blue-500/20">
+                    {{ user.username.charAt(0) }}
+                  </div>
+                  <div>
+                    <h4 class="font-medium text-gray-800 dark:text-white/90">{{ user.username }}</h4>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">ID #{{ user.id }}</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-5 py-4">
+                <span class="inline-flex rounded-full px-3 py-1 text-xs font-medium" [ngClass]="getRoleClass(user.role)">
+                  {{ user.role || 'user' }}
+                </span>
+              </td>
+              <td class="px-5 py-4 text-sm text-gray-600 dark:text-gray-300">{{ user.email }}</td>
+              <td class="px-5 py-4">
+                <div class="flex items-center justify-end gap-2">
+                  <button type="button" (click)="editUser(user)" class="rounded-lg bg-blue-50 px-3 py-2 text-sm text-blue-600 transition hover:bg-blue-100"><i class="bi bi-pencil-square"></i></button>
+                  <button type="button" (click)="deleteUser(user.id)" class="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600 transition hover:bg-red-100"><i class="bi bi-trash"></i></button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="users.length === 0">
+              <td colspan="4" class="px-5 py-10 text-center text-gray-500">
+                <i class="bi bi-people text-5xl text-gray-300 dark:text-gray-600"></i>
+                <p class="mt-3 text-gray-500 dark:text-gray-400">Aucun utilisateur inscrit sur le site public Lyonnais</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div
+  *ngIf="showModal"
+  class="fixed inset-0 z-99999 flex items-center justify-center bg-black/50 p-4"
+>
+  <div class="w-full max-w-lg rounded-2xl bg-white p-6 dark:bg-gray-900 shadow-xl">
+    
+    <div class="mb-5 flex items-center justify-between">
+      <h3 class="text-xl font-semibold text-gray-800 dark:text-white">
+        Ajouter un nouveau compte
+      </h3>
+      <button type="button" (click)="closeModal()" class="text-gray-500 hover:text-red-500 transition">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="space-y-4">
+      
+      <div>
+        <label class="text-xs font-medium text-gray-500 mb-1 block">Type de compte à ajouter</label>
+        <select
+          [(ngModel)]="newAccount.accountType"
+          (change)="onAccountTypeChange()"
+          title="Type de compte à ajouter" aria-label="Sélectionner le type de compte à ajouter"
+          class="w-full rounded-xl border border-gray-300 px-4 py-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+        >
+          <option value="admin">Administrateur (Accès Dashboard)</option>
+          <option value="user">Utilisateur Standard (Site Public)</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="text-xs font-medium text-gray-500 mb-1 block">Nom d'utilisateur</label>
+        <input
+          [(ngModel)]="newAccount.username"
+          type="text"
+          placeholder="Ex: konan_dev"
+          class="w-full rounded-xl border border-gray-300 px-4 py-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+        />
+      </div>
+
+      <div>
+        <label class="text-xs font-medium text-gray-500 mb-1 block">Adresse Email</label>
+        <input
+          [(ngModel)]="newAccount.email"
+          type="email"
+          placeholder="Ex: exemple@domaine.com"
+          class="w-full rounded-xl border border-gray-300 px-4 py-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+        />
+      </div>
+
+      <div>
+        <label class="text-xs font-medium text-gray-500 mb-1 block">Mot de passe</label>
+        <input
+          [(ngModel)]="newAccount.password"
+          type="password"
+          placeholder="••••••••"
+          class="w-full rounded-xl border border-gray-300 px-4 py-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+        />
+      </div>
+
+      <!-- <div>
+        <label class="text-xs font-medium text-gray-500 mb-1 block">Rôle assigné</label>
+        <select
+          [(ngModel)]="newAccount.role"
+          class="w-full rounded-xl border border-gray-300 px-4 py-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+        >
+          <ng-container *ngIf="newAccount.accountType === 'admin'">
+            <option value="admin">Admin</option>
+            <option value="superadmin">Super Admin</option>
+            <option value="comite">Comité</option>
+          </ng-container>
+          <ng-container *ngIf="newAccount.accountType === 'user'">
+            <option value="user">User (Défaut)</option>
+          </ng-container>
+        </select>
+      </div> -->
+
+      <div>
+  <label for="roleSelect" class="text-xs font-medium text-gray-500 mb-1 block">Rôle assigné</label>
+  <select 
+    id="roleSelect"
+    [(ngModel)]="newAccount.role"
+    class="w-full rounded-xl border border-gray-300 px-4 py-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+  >
+    <ng-container *ngIf="newAccount.accountType === 'admin'">
+      <option value="Admin">Admin</option>
+      <option value="Super Admin">Super Admin</option>
+      <option value="Comité">Comité</option>
+    </ng-container>
+    <ng-container *ngIf="newAccount.accountType === 'user'">
+      <option value="User">User (Défaut)</option>
+    </ng-container>
+  </select>
+</div>
+
+    </div>
+
+    <div class="mt-6 flex justify-end gap-3">
+      <button
+        (click)="closeModal()"
+        class="rounded-xl border border-gray-300 px-5 py-2 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 transition"
+      >
+        Annuler
+      </button>
+
+      <button
+        (click)="createAccount()"
+        [disabled]="isSaving"
+        class="rounded-xl bg-brand-500 px-5 py-2 text-white disabled:opacity-60 flex items-center gap-2 hover:bg-brand-600 transition"
+      >
+        <span *ngIf="isSaving" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+        {{ isSaving ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
+
+  </div>
+</div>
+
+@if (toast) {
+  <div class="fixed top-4 right-4 z-50 flex items-center gap-3 rounded-xl px-5 py-3 text-sm font-medium text-white shadow-lg transition-all animate-fade-in"
+    [class.bg-green-600]="toast.type === 'success'"
+    [class.bg-red-500]="toast.type === 'error'">
+    <i class="bi" [class.bi-check-circle-fill]="toast.type === 'success'" [class.bi-x-circle-fill]="toast.type === 'error'"></i>
+    {{ toast.message }}
+  </div>
+}

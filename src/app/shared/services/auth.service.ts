@@ -52,6 +52,7 @@ interface LoginPayload {
 })
 export class AuthService {
   private readonly apiBaseUrl = environment.apiBaseUrl;
+  private readonly TOKEN_KEY = 'authToken';
 
   constructor(private readonly http: HttpClient) {}
 
@@ -101,7 +102,7 @@ export class AuthService {
 
     const user = this.extractUser(response);
 
-    localStorage.setItem('authToken', token);
+    this.setToken(token);
     localStorage.setItem('isAuthenticated', 'true');
 
     if (user?.email) {
@@ -113,11 +114,23 @@ export class AuthService {
     }
   }
 
+  getToken(): string | null {
+    return localStorage.getItem(this.TOKEN_KEY);
+  }
+
+  setToken(token: string): void {
+    localStorage.setItem(this.TOKEN_KEY, token);
+  }
+
+  removeToken(): void {
+    localStorage.removeItem(this.TOKEN_KEY);
+  }
+
   /**
    * Clear all authentication data from localStorage
    */
   clearSession(): void {
-    localStorage.removeItem('authToken');
+    this.removeToken();
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('userEmail');
     localStorage.removeItem('currentUser');

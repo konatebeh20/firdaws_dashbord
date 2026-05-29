@@ -14,11 +14,21 @@ import { AvatarElementComponent } from './pages/ui-elements/avatar-element/avata
 import { BadgesComponent } from './pages/ui-elements/badges/badges.component';
 import { ButtonsComponent } from './pages/ui-elements/buttons/buttons.component';
 import { ImagesComponent } from './pages/ui-elements/images/images.component';
-import { VideosComponent } from './pages/ui-elements/videos/videos.component';
+import { VideosComponent } from './pages/videos/videos.component';
 import { SignInComponent } from './pages/auth-pages/sign-in/sign-in.component';
 import { SignUpComponent } from './pages/auth-pages/sign-up/sign-up.component';
 import { CalenderComponent } from './pages/calender/calender.component';
 import { PrayerTimesComponent } from './pages/prayer-times/prayer-times.component';
+
+import { AnnoncesComponent } from './pages/annonces/annonces.component';
+import { EventsComponent } from './pages/events/events.component';
+import { DocumentsComponent } from './pages/documents/documents.component';
+import { PrayerComponent } from './pages/prayer/prayer.component';
+import { DonsComponent } from './pages/dons/dons.component';
+import { UsersComponent } from './pages/users/users.component';
+import { SettingsComponent } from './pages/settings/settings.component';
+
+
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -34,39 +44,40 @@ export const routes: Routes = [
         title: 'Tableau de bord - Mosquée Cité Bel Aire',
       },
       {
-        path:'calendar',
-        component:CalenderComponent,
-        title:'Calendrier / Prières - Mosquée Cité Bel Aire'
-      },
-      {
         path:'prayer-times',
         component:PrayerTimesComponent,
         title:'Horaires des Prières - Mosquée Cité Bel Aire'
       },
       {
         path:'events',
-        component:InvoicesComponent,
-        title:'Événements - Mosquée Cité Bel Aire'
+        component:EventsComponent,
+        title:'Événements / Calendrier - Mosquée Cité Bel Aire'
+      },
+      {
+        path:'documents',
+        component:DocumentsComponent,
+        title:'Documents - Mosquée Cité Bel Aire'
       },
       {
         path:'annonces',
-        component:BlankComponent,
+        component:AnnoncesComponent,
         title:'Annonces - Mosquée Cité Bel Aire'
       },
       {
         path:'fideles',
-        component:ProfileComponent,
+        component:PrayerComponent,
         title:'Fidèles - Mosquée Cité Bel Aire'
       },
       {
         path:'donations',
-        component:InvoicesComponent,
+        component:DonsComponent,
         title:'Donations - Mosquée Cité Bel Aire'
       },
+      
       {
-        path:'documents',
+        path:'formations',
         component:BasicTablesComponent,
-        title:'Documents - Mosquée Cité Bel Aire'
+        title:'Formations - Mosquée Cité Bel Aire'
       },
       {
         path:'videos',
@@ -75,7 +86,7 @@ export const routes: Routes = [
       },
       {
         path:'admins',
-        component:ProfileComponent,
+        component:UsersComponent,
         title:'Admins - Mosquée Cité Bel Aire'
       },
       {
@@ -84,10 +95,15 @@ export const routes: Routes = [
         title:'Profil - Mosquée Cité Bel Aire'
       },
       {
-        path:'form-elements',
-        component:FormElementsComponent,
+        path:'settings',
+        component:SettingsComponent,
         title:'Paramètres - Mosquée Cité Bel Aire'
       },
+      // {
+      //   path:'form-elements',
+      //   component:FormElementsComponent,
+      //   title:'Paramètres - Mosquée Cité Bel Aire'
+      // },
       {
         path:'basic-tables',
         component:BasicTablesComponent,
@@ -138,11 +154,6 @@ export const routes: Routes = [
         path:'images',
         component:ImagesComponent,
         title:'Angular Images Dashboard | TailAdmin - Angular Admin Dashboard Template'
-      },
-      {
-        path:'videos',
-        component:VideosComponent,
-        title:'Angular Videos Dashboard | TailAdmin - Angular Admin Dashboard Template'
       },
     ]
   },

@@ -1,1 +1,49 @@
-<p>users works!</p>
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="p-4 border-b border-gray-200 dark:border-gray-800">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Administrateurs</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Gérez les administrateurs et utilisateurs de la mosquée</p>
+      </div>
+      <button
+        (click)="addUser()"
+        class="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition-colors"
+        style="background:#6d28d9;"
+      >
+        <i class="bi bi-person-plus-fill"></i>
+        Nouvel admin
+      </button>
+    </div>
+  </div>
+
+  <div class="p-4">
+    <div class="flex flex-col gap-2">
+      <div
+        *ngFor="let u of users"
+        class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800 transition-colors"
+      >
+        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-purple-100 text-purple-700 font-bold dark:bg-purple-900/30 shrink-0">
+          {{ u.name.charAt(0) }}
+        </div>
+        <div class="flex-1 min-w-0">
+          <h4 class="text-sm font-medium text-gray-800 dark:text-white/90 mb-0.5 truncate">{{ u.name }}</h4>
+          <div class="text-xs text-gray-500 dark:text-gray-400">{{ u.email }}</div>
+        </div>
+        <span class="inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-700 rounded-full border border-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600">
+          {{ u.role }}
+        </span>
+        <button
+          (click)="deleteUser(u.id)"
+          class="ml-2 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors shrink-0"
+        >
+          Supprimer
+        </button>
+      </div>
+
+      <div *ngIf="users.length === 0" class="text-center py-8">
+        <i class="bi bi-people text-3xl text-gray-300 dark:text-gray-600"></i>
+        <p class="mt-2 text-sm text-gray-500">Aucun utilisateur</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,273 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+import { ModalComponent } from '../../shared/components/ui/modal/modal.component';
+
+interface DocumentInfo {
+  id: number;
+  title: string;
+  description?: string;
+  date: string;
+  type: string;
+  size?: string;
+  url?: string;
+  file?: File;
+}
+
+@Component({
+  selector: 'app-documents',
+  standalone: true,
+  imports: [CommonModule, FormsModule, ModalComponent],
+  templateUrl: './documents.component.html',
+  styleUrl: './documents.component.css',
+})
+export class DocumentsComponent {
+
+  // documents: DocumentInfo[] = [
+  //   { id: 1, title: "Guide du pèlerin", description: "Guide complet pour le pèlerinage", date: "10 mars 2026", type: "PDF", size: "2.4 MB" }, 
+  //   { id: 2, title: "Recueil de hadiths", description: "40 hadiths authentiques", date: "5 fév. 2026", type: "PDF", size: "1.8 MB" },
+  //   { id: 3, title: "Programme Ramadan 2026", description: "Calendrier et horaires spéciaux", date: "15 mars 2026", type: "PDF", size: "0.5 MB" }
+  // ];
+  documents: DocumentInfo[] = [];
+
+  isLoading = true;
+  isModalOpen = false;
+  isEditMode = false;
+  selectedDocument: DocumentInfo | null = null;
+  isDragging = false;
+  toast: { message: string; type: 'success' | 'error' } | null = null;
+
+  formData: DocumentInfo = {
+    id: 0,
+    title: '',
+    description: '',
+    date: new Date().toLocaleDateString('fr-FR'),
+    type: 'PDF',
+    size: '',
+    url: '',
+    file: undefined,
+  };
+
+  constructor() {
+    this.loadDocuments();
+  }
+
+  loadDocuments() {
+    this.isLoading = true;
+    // Simulation de chargement API
+    setTimeout(() => {
+      this.documents = [
+        { id: 1, title: "Guide du pèlerin", description: "Guide complet pour le pèlerinage", date: "10 mars 2026", type: "PDF", size: "2.4 MB" }, 
+        { id: 2, title: "Recueil de hadiths", description: "40 hadiths authentiques", date: "5 fév. 2026", type: "PDF", size: "1.8 MB" },
+        { id: 3, title: "Programme Ramadan 2026", description: "Calendrier et horaires spéciaux", date: "15 mars 2026", type: "PDF", size: "0.5 MB" }
+      ];
+      this.isLoading = false;
+    }, 800);
+  }
+
+  addDocument() {
+    this.openModal();
+  }
+
+  getDocumentsByType(type: string): DocumentInfo[] {
+    return this.documents.filter(d => d.type === type);
+  }
+
+  getTypeIcon(type: string): string {
+    const icons: Record<string, string> = {
+      'PDF': 'bi-file-earmark-pdf-fill',
+      'DOC': 'bi-file-earmark-word-fill',
+      'DOCX': 'bi-file-earmark-word-fill',
+      'XLS': 'bi-file-earmark-excel-fill',
+      'PPT': 'bi-file-earmark-slides-fill',
+      'ZIP': 'bi-file-earmark-zip-fill',
+      'IMAGE': 'bi-file-earmark-image-fill'
+    };
+    return icons[type] || 'bi-file-earmark-fill';
+  }
+
+  getTypeColor(type: string): string {
+    const colors: Record<string, string> = {
+      'PDF': 'red',
+      'DOC': 'blue',
+      'DOCX': 'blue',
+      'XLS': 'green',
+      'PPT': 'orange',
+      'ZIP': 'yellow',
+      'IMAGE': 'purple'
+    };
+    return colors[type] || 'gray';
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  // ========== DRAG & DROP ==========
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = true;
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = false;
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = false;
+    
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      this.handleFile(files[0]);
+    }
+  }
+
+    onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.handleFile(input.files[0]);
+    }
+  }
+
+  handleFile(file: File) {
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'image/jpeg', 'image/png', 'image/gif'];
+    
+    if (!allowedTypes.includes(file.type)) {
+      this.showToast('Type de fichier non supporté', 'error');
+      return;
+    }
+
+    // Déterminer le type basé sur l'extension
+    let docType = 'PDF';
+    if (file.type.includes('word')) docType = 'DOCX';
+    else if (file.type.includes('excel')) docType = 'XLS';
+    else if (file.type.includes('image')) docType = 'IMAGE';
+    
+    this.formData.file = file;
+    this.formData.title = this.formData.title || file.name.replace(/\.[^/.]+$/, '');
+    this.formData.type = docType;
+    
+
+    this.formData.size = this.formatFileSize(file.size);
+    
+    this.showToast(`Fichier "${file.name}" sélectionné`, 'success');
+  }
+
+  openModal() {
+    this.isEditMode = false;
+    this.selectedDocument = null;
+    this.formData = {
+      id: 0,
+      title: '',
+      description: '',
+      date: new Date().toLocaleDateString('fr-FR'),
+      type: 'PDF',
+      size: '',
+      url: '',
+      file: undefined,
+    };
+    this.isModalOpen = true;
+  }
+
+  editDocument(doc: DocumentInfo) {
+    this.isEditMode = true;
+    this.selectedDocument = doc;
+    this.formData = { ...doc };
+    this.isModalOpen = true;
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+    this.selectedDocument = null;
+    this.isDragging = false;
+  }
+
+  saveDocument() {
+    if (!this.formData.title) {
+      // alert('Veuillez entrer un titre');
+      this.showToast('Veuillez entrer un titre', 'error');
+      return;
+    }
+
+    if (this.isEditMode && this.selectedDocument) {
+      // Mise à jour
+      this.documents = this.documents.map(d => 
+        d.id === this.selectedDocument!.id ? { ...this.formData, id: d.id } : d
+      );
+    } else {
+      // Ajout
+      const newDoc: DocumentInfo = {
+        ...this.formData,
+        id: Date.now(),
+        date: new Date().toLocaleDateString('fr-FR')
+      };
+      this.documents = [newDoc, ...this.documents];
+      this.showToast('Document ajouté ✓');
+      // this.documents.push(newDoc);
+    }
+    
+    this.closeModal();
+  }
+
+  deleteDocument(id: number) {
+    if (confirm('Supprimer ce document ?')) {
+      this.documents = this.documents.filter(d => d.id !== id);
+      this.showToast('Document supprimé ✓');
+    }
+  }
+
+  downloadDocument(doc: DocumentInfo) {
+    if (doc.url) {
+      window.open(doc.url, '_blank');
+    } else if (doc.file) {
+      // Simuler téléchargement
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(doc.file);
+      link.download = doc.file.name;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } else {
+      this.showToast(`Téléchargement de "${doc.title}" (${doc.size || 'Fichier'})`, 'success');
+    }
+    // alert(`Téléchargement de "${doc.title}" (${doc.size || 'Fichier'})`);
+  }
+
+  // documents: DocumentInfo[] = [
+  //   { id: 1, title: "Guide du pèlerin", description: "Guide complet pour le pèlerinage", date: "10 mars 2026", type: "PDF", size: "2.4 MB" }, 
+  //   { id: 2, title: "Recueil de hadiths", date: "5 fév. 2026", type: "PDF" }
+  // ];
+
+  // deleteDocument(id: number) {
+  //   if (confirm('Supprimer ce document ?')) {
+  //     this.documents = this.documents.filter(d => d.id !== id);
+  //   }
+  // }
+
+  // addDocument() {
+  //   const title = prompt("Titre du document");
+  //   if (title) {
+  //     this.documents.push({
+  //       id: Date.now(),
+  //       title,
+  //       date: new Date().toLocaleDateString('fr-FR'),
+  //       type: "PDF"
+  //     });
+  //   }
+  // }
+
+   private showToast(message: string, type: 'success' | 'error' = 'success') {
+    this.toast = { message, type };
+    setTimeout(() => this.toast = null, 3000);
+  }
+}
+

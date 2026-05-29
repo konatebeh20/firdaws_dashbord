@@ -1,13 +1,1189 @@
-<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <title>Mosquée Cité Bel Aire | Tableau de bord</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- <link rel="icon" type="image/x-icon" href="favicon.ico"> -->
+  <link rel="icon" type="image/svg+xml" href="/images/logo/logo-icon.svg">
+
+  <!-- <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #0a1f1e 0%, #0c2a28 100%);
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      overflow: hidden;
+    }
+
+    /* ===== PRELOADER PRINCIPAL ===== */
+    .preloader {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #0f2b2d 0%, #0a1f20 50%, #0f2b2d 100%);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s ease;
+    }
+    .preloader.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* Particules de fond */
+    .particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: radial-gradient(circle, #f5e6b8, transparent);
+      border-radius: 50%;
+      opacity: 0;
+      animation: floatParticle 8s infinite linear;
+    }
+    @keyframes floatParticle {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.4; }
+      100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* Ornements décoratifs */
+    .ornament {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle, rgba(212,175,55,0.1), transparent);
+      border-radius: 50%;
+      animation: pulseOrnament 3s ease-in-out infinite;
+    }
+    .ornament-1 { top: -20px; left: -20px; animation-delay: 0s; }
+    .ornament-2 { bottom: -20px; right: -20px; animation-delay: 1s; }
+    .ornament-3 { top: 50%; right: -30px; animation-delay: 0.5s; width: 40px; height: 40px; }
+    .ornament-4 { bottom: 30%; left: -30px; animation-delay: 1.5s; width: 40px; height: 40px; }
+    @keyframes pulseOrnament {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.3); opacity: 0.6; }
+    }
+
+    /* CONTAINER PRINCIPAL */
+    .loader-container {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 20px;
+      max-width: 550px;
+      width: 100%;
+    }
+
+    /* ===== ZONE LUNE + MOSQUÉE ===== */
+    .moon-mosque-area {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      margin: 0 auto 20px;
+      animation: floatIllustration 4s ease-in-out infinite;
+    }
+    @keyframes floatIllustration {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Croissant lunaire avec étoiles tournantes */
+    .moon-stars-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 180px;
+      height: 180px;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+    .crescent-moon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 90px;
+      height: 90px;
+      background: radial-gradient(circle at 30% 35%, #FFF9C4, #FFD966);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 25px 8px rgba(255, 220, 100, 0.6);
+      animation: moonGlow 2s ease-in-out infinite alternate;
+    }
+    .crescent-moon::after {
+      content: "";
+      position: absolute;
+      top: -8px;
+      right: -12px;
+      width: 70px;
+      height: 70px;
+      background: #0c2a28;
+      border-radius: 50%;
+      box-shadow: inset -2px -2px 8px rgba(0,0,0,0.2);
+    }
+    @keyframes moonGlow {
+      0% { box-shadow: 0 0 15px 4px rgba(255, 210, 90, 0.5); transform: translate(-50%, -50%) scale(1); }
+      100% { box-shadow: 0 0 35px 12px rgba(255, 220, 100, 0.9); transform: translate(-50%, -50%) scale(1.02); }
+    }
+
+    /* Anneau d'étoiles rotatif */
+    .star-ring {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      animation: rotateRing 12s linear infinite;
+    }
+    .star {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      background: radial-gradient(circle, #FFE484, #FFC107);
+      border-radius: 50%;
+      box-shadow: 0 0 8px #FFD966;
+      animation: twinkle 1.6s ease-in-out infinite;
+    }
+    .star-1 { top: 0%; left: 50%; transform: translate(-50%, -50%); }
+    .star-2 { top: 50%; right: 0%; transform: translate(50%, -50%); animation-delay: 0.4s; }
+    .star-3 { bottom: 0%; left: 50%; transform: translate(-50%, 50%); animation-delay: 0.8s; }
+    .star-4 { top: 50%; left: 0%; transform: translate(-50%, -50%); animation-delay: 1.2s; }
+    @keyframes rotateRing { to { transform: rotate(360deg); } }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Étoiles secondaires fixes */
+    .star-small {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #FFE484;
+      border-radius: 50%;
+      box-shadow: 0 0 5px #FFBF00;
+      animation: twinkle 1.8s ease-in-out infinite;
+    }
+    .s1 { top: 12%; left: 15%; animation-delay: 0.2s; }
+    .s2 { top: 85%; right: 20%; animation-delay: 0.6s; }
+    .s3 { bottom: 15%; left: 75%; animation-delay: 1s; }
+    .s4 { top: 45%; right: 12%; animation-delay: 1.4s; }
+
+    /* SVG Mosquée (en arrière-plan de la lune) */
+    .mosque-svg-bg {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 240px;
+      height: auto;
+      z-index: 1;
+      opacity: 0.85;
+    }
+    .mosque-svg {
+      width: 100%;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3));
+    }
+
+    /* ===== TEXTES ===== */
+    .title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      background: linear-gradient(135deg, #ffffff 0%, #f5e6b8 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+    .subtitle-arabic {
+      font-family: 'Amiri', serif;
+      font-size: 24px;
+      color: #FFDA88;
+      margin-bottom: 15px;
+      opacity: 0.9;
+    }
+
+    /* ===== SPINNER MODERNE ===== */
+    .spinner-wrapper {
+      margin: 25px auto;
+      position: relative;
+      width: 70px;
+      height: 70px;
+    }
+    .spinner-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 3px solid rgba(212, 175, 55, 0.15);
+      border-top: 3px solid #d4af37;
+      border-right: 3px solid #f5e6b8;
+      border-radius: 50%;
+      animation: spinRing 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+    }
+    .spinner-ring:nth-child(2) {
+      width: 70%;
+      height: 70%;
+      top: 15%;
+      left: 15%;
+      border: 2px solid rgba(212, 175, 55, 0.15);
+      border-bottom: 2px solid #d4af37;
+      border-left: 2px solid #f5e6b8;
+      animation: spinRingReverse 1s infinite;
+    }
+    .spinner-ring:nth-child(3) {
+      width: 40%;
+      height: 40%;
+      top: 30%;
+      left: 30%;
+      border: 2px solid rgba(212, 175, 55, 0.15);
+      border-top: 2px solid #f5e6b8;
+      border-right: 2px solid #d4af37;
+      animation: spinRing 0.8s infinite;
+    }
+    @keyframes spinRing { to { transform: rotate(360deg); } }
+    @keyframes spinRingReverse { to { transform: rotate(-360deg); } }
+
+    /* Barre de progression */
+    .progress-section {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 280px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .progress-bar-container {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 100px;
+      height: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #d4af37, #f5e6b8, #d4af37);
+      border-radius: 100px;
+      animation: fillProgress 2.8s ease-out forwards;
+      position: relative;
+    }
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmer 1.5s infinite;
+    }
+    @keyframes fillProgress {
+      0% { width: 0%; }
+      30% { width: 35%; }
+      70% { width: 80%; }
+      100% { width: 100%; }
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+    .progress-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 1px;
+    }
+    .progress-percentage {
+      color: #f5e6b8;
+      font-weight: 600;
+    }
+
+    /* Messages dynamiques */
+    .loading-messages {
+      margin-top: 25px;
+      display: flex;
+      justify-content: center;
+    }
+    .message-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .message-badge i { font-size: 14px; animation: rotateIcon 2s linear infinite; }
+    @keyframes rotateIcon { to { transform: rotate(360deg); } }
+
+    /* Verset */
+    .verse {
+      margin-top: 35px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-family: 'Amiri', serif;
+      font-size: 14px;
+      color: rgba(212, 175, 55, 0.7);
+    }
+    .verse-arabic { font-size: 16px; margin-bottom: 6px; }
+    .verse-french { font-size: 11px; letter-spacing: 0.5px; }
+
+    /* RESPONSIVE */
+    @media (max-width: 550px) {
+      .moon-mosque-area { width: 220px; height: 220px; }
+      .moon-stars-container { width: 140px; height: 140px; }
+      .crescent-moon { width: 70px; height: 70px; }
+      .crescent-moon::after { width: 54px; height: 54px; right: -8px; top: -6px; }
+      .mosque-svg-bg { width: 180px; }
+      .title { font-size: 22px; }
+      .subtitle-arabic { font-size: 20px; }
+    }
+  </style> -->
+
+  <style>
+    body {
+      min-height: 100vh;
+      /*background: linear-gradient(145deg, #0a1f1e 0%, #0c2a28 100%);*/
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      /*overflow: hidden;*/
+    }
+
+    /* ===== PRELOADER PRINCIPAL ===== */
+    .preloader {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #0f2b2d 0%, #0a1f20 50%, #0f2b2d 100%);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s ease;
+    }
+    .preloader.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* Particules de fond */
+    .particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: radial-gradient(circle, #f5e6b8, transparent);
+      border-radius: 50%;
+      opacity: 0;
+      animation: floatParticle 8s infinite linear;
+    }
+    @keyframes floatParticle {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.4; }
+      100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* Ornements décoratifs */
+    .ornament {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle, rgba(212,175,55,0.1), transparent);
+      border-radius: 50%;
+      animation: pulseOrnament 3s ease-in-out infinite;
+    }
+    .ornament-1 { top: -20px; left: -20px; animation-delay: 0s; }
+    .ornament-2 { bottom: -20px; right: -20px; animation-delay: 1s; }
+    .ornament-3 { top: 50%; right: -30px; animation-delay: 0.5s; width: 40px; height: 40px; }
+    .ornament-4 { bottom: 30%; left: -30px; animation-delay: 1.5s; width: 40px; height: 40px; }
+    @keyframes pulseOrnament {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.3); opacity: 0.6; }
+    }
+
+    /* CONTAINER PRINCIPAL */
+    .loader-container {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 20px;
+      max-width: 550px;
+      width: 100%;
+    }
+
+    /* ===== ZONE LUNE + MOSQUÉE ===== */
+    .moon-mosque-area {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      margin: 0 auto 20px;
+      animation: floatIllustration 4s ease-in-out infinite;
+    }
+    @keyframes floatIllustration {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Croissant lunaire avec étoiles tournantes */
+    .moon-stars-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 180px;
+      height: 180px;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+    .crescent-moon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 90px;
+      height: 90px;
+      background: radial-gradient(circle at 30% 35%, #FFF9C4, #FFD966);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 25px 8px rgba(255, 220, 100, 0.6);
+      animation: moonGlow 2s ease-in-out infinite alternate;
+    }
+    .crescent-moon::after {
+      content: "";
+      position: absolute;
+      top: -8px;
+      right: -12px;
+      width: 70px;
+      height: 70px;
+      background: #0c2a28;
+      border-radius: 50%;
+      box-shadow: inset -2px -2px 8px rgba(0,0,0,0.2);
+    }
+    @keyframes moonGlow {
+      0% { box-shadow: 0 0 15px 4px rgba(255, 210, 90, 0.5); transform: translate(-50%, -50%) scale(1); }
+      100% { box-shadow: 0 0 35px 12px rgba(255, 220, 100, 0.9); transform: translate(-50%, -50%) scale(1.02); }
+    }
+
+    /* Anneau d'étoiles rotatif */
+    .star-ring {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      animation: rotateRing 12s linear infinite;
+    }
+    .star {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      background: radial-gradient(circle, #FFE484, #FFC107);
+      border-radius: 50%;
+      box-shadow: 0 0 8px #FFD966;
+      animation: twinkle 1.6s ease-in-out infinite;
+    }
+    .star-1 { top: 0%; left: 50%; transform: translate(-50%, -50%); }
+    .star-2 { top: 50%; right: 0%; transform: translate(50%, -50%); animation-delay: 0.4s; }
+    .star-3 { bottom: 0%; left: 50%; transform: translate(-50%, 50%); animation-delay: 0.8s; }
+    .star-4 { top: 50%; left: 0%; transform: translate(-50%, -50%); animation-delay: 1.2s; }
+    @keyframes rotateRing { to { transform: rotate(360deg); } }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Étoiles secondaires fixes */
+    .star-small {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #FFE484;
+      border-radius: 50%;
+      box-shadow: 0 0 5px #FFBF00;
+      animation: twinkle 1.8s ease-in-out infinite;
+    }
+    .s1 { top: 12%; left: 15%; animation-delay: 0.2s; }
+    .s2 { top: 85%; right: 20%; animation-delay: 0.6s; }
+    .s3 { bottom: 15%; left: 75%; animation-delay: 1s; }
+    .s4 { top: 45%; right: 12%; animation-delay: 1.4s; }
+
+    /* SVG Mosquée (en arrière-plan de la lune) */
+    .mosque-svg-bg {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 240px;
+      height: auto;
+      z-index: 1;
+      opacity: 0.85;
+    }
+    .mosque-svg {
+      width: 100%;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3));
+    }
+
+    /* ===== TEXTES ===== */
+    .title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      background: linear-gradient(135deg, #ffffff 0%, #f5e6b8 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+    .subtitle-arabic {
+      font-family: 'Amiri', serif;
+      font-size: 24px;
+      color: #FFDA88;
+      margin-bottom: 15px;
+      opacity: 0.9;
+    }
+
+    /* ===== SPINNER MODERNE ===== */
+    .spinner-wrapper {
+      margin: 25px auto;
+      position: relative;
+      width: 70px;
+      height: 70px;
+    }
+    .spinner-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 3px solid rgba(212, 175, 55, 0.15);
+      border-top: 3px solid #d4af37;
+      border-right: 3px solid #f5e6b8;
+      border-radius: 50%;
+      animation: spinRing 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+    }
+    .spinner-ring:nth-child(2) {
+      width: 70%;
+      height: 70%;
+      top: 15%;
+      left: 15%;
+      border: 2px solid rgba(212, 175, 55, 0.15);
+      border-bottom: 2px solid #d4af37;
+      border-left: 2px solid #f5e6b8;
+      animation: spinRingReverse 1s infinite;
+    }
+    .spinner-ring:nth-child(3) {
+      width: 40%;
+      height: 40%;
+      top: 30%;
+      left: 30%;
+      border: 2px solid rgba(212, 175, 55, 0.15);
+      border-top: 2px solid #f5e6b8;
+      border-right: 2px solid #d4af37;
+      animation: spinRing 0.8s infinite;
+    }
+    @keyframes spinRing { to { transform: rotate(360deg); } }
+    @keyframes spinRingReverse { to { transform: rotate(-360deg); } }
+
+    /* Barre de progression */
+    .progress-section {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 280px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .progress-bar-container {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 100px;
+      height: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #d4af37, #f5e6b8, #d4af37);
+      border-radius: 100px;
+      animation: fillProgress 2.8s ease-out forwards;
+      position: relative;
+    }
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmer 1.5s infinite;
+    }
+    @keyframes fillProgress {
+      0% { width: 0%; }
+      30% { width: 35%; }
+      70% { width: 80%; }
+      100% { width: 100%; }
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+    .progress-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 1px;
+    }
+    .progress-percentage {
+      color: #f5e6b8;
+      font-weight: 600;
+    }
+
+    /* Messages dynamiques avec SVG icons */
+    .loading-messages {
+      margin-top: 25px;
+      display: flex;
+      justify-content: center;
+    }
+    .message-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .message-icon {
+      width: 18px;
+      height: 18px;
+      animation: rotateIcon 2s linear infinite;
+    }
+    @keyframes rotateIcon {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Verset */
+    .verse {
+      margin-top: 35px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-family: 'Amiri', serif;
+      font-size: 14px;
+      color: rgba(212, 175, 55, 0.7);
+    }
+    .verse-arabic { font-size: 16px; margin-bottom: 6px; }
+    .verse-french { font-size: 11px; letter-spacing: 0.5px; }
+
+    /* RESPONSIVE */
+    @media (max-width: 550px) {
+      .moon-mosque-area { width: 220px; height: 220px; }
+      .moon-stars-container { width: 140px; height: 140px; }
+      .crescent-moon { width: 70px; height: 70px; }
+      .crescent-moon::after { width: 54px; height: 54px; right: -8px; top: -6px; }
+      .mosque-svg-bg { width: 180px; }
+      .title { font-size: 22px; }
+      .subtitle-arabic { font-size: 20px; }
+    }
+  </style>
+
+  
 </head>
 <body>
-  <app-root></app-root>
+  <app-root>
+    
+   <div class="preloader" id="preloader">
+    <!-- Particules -->
+    <div class="particles" id="particles"></div>
+    <!-- Ornements -->
+    <div class="ornament ornament-1"></div>
+    <div class="ornament ornament-2"></div>
+    <div class="ornament ornament-3"></div>
+    <div class="ornament ornament-4"></div>
+
+    <div class="loader-container">
+      <!-- Zone Lune + Mosquée fusionnées -->
+      <div class="moon-mosque-area">
+        <div class="moon-stars-container">
+          <div class="star-ring">
+            <div class="star star-1"></div>
+            <div class="star star-2"></div>
+            <div class="star star-3"></div>
+            <div class="star star-4"></div>
+          </div>
+          <div class="star-small s1"></div>
+          <div class="star-small s2"></div>
+          <div class="star-small s3"></div>
+          <div class="star-small s4"></div>
+          <div class="crescent-moon"></div>
+        </div>
+
+        <div class="mosque-svg-bg">
+          <svg class="mosque-svg" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#e8f3f0" stop-opacity="0.9"/>
+                <stop offset="100%" stop-color="#c5d9d4" stop-opacity="0.9"/>
+              </linearGradient>
+              <linearGradient id="domeGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#d4af37"/>
+                <stop offset="100%" stop-color="#f5e6b8"/>
+              </linearGradient>
+            </defs>
+            <rect x="15" y="30" width="8" height="60" rx="2" fill="url(#wallGrad)"/>
+            <rect x="177" y="30" width="8" height="60" rx="2" fill="url(#wallGrad)"/>
+            <circle cx="19" cy="28" r="5" fill="url(#domeGrad)"/>
+            <circle cx="181" cy="28" r="5" fill="url(#domeGrad)"/>
+            <rect x="35" y="60" width="130" height="50" rx="5" fill="url(#wallGrad)"/>
+            <path d="M55 60 Q100 15 145 60 Z" fill="url(#domeGrad)"/>
+            <path d="M88 110 L88 80 Q100 72 112 80 L112 110 Z" fill="#b8960c"/>
+            <path d="M45 75 L45 95 M65 75 L65 95 M85 75 L85 95 M105 75 L105 95 M125 75 L125 95 M145 75 L145 95" stroke="#d4af37" stroke-width="1.2" opacity="0.4"/>
+            <path d="M95 30 Q103 24 110 30 Q105 28 100 30 Z" fill="#fff" opacity="0.8"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="title">MOSQUÉE FIRDAWS</div>
+      <div class="subtitle-arabic">مسجد فردوس</div>
+
+      <div class="spinner-wrapper">
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+      </div>
+
+      <div class="progress-section">
+        <div class="progress-bar-container">
+          <div class="progress-fill"></div>
+        </div>
+        <div class="progress-stats">
+          <span>CHARGEMENT</span>
+          <span class="progress-percentage" id="progressPercent">0%</span>
+        </div>
+      </div>
+
+      <div class="loading-messages" id="loadingMessages">
+        <span class="message-badge">
+          <svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          Initialisation des modules
+        </span>
+      </div>
+
+      <div class="verse">
+        <div class="verse-arabic">وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا</div>
+        <div class="verse-french">"Et quiconque craint Allah, Il lui accorde une issue favorable"</div>
+        <div class="verse-french">Sourate At-Talaq (65:2)</div>
+      </div>
+    </div>
+  </div>
+
+  </app-root>
+
+
+
+  <script>
+    (function() {
+      // Particules
+      const particlesContainer = document.getElementById('particles');
+      if (particlesContainer) {
+        for (let i = 0; i < 45; i++) {
+          const p = document.createElement('div');
+          p.classList.add('particle');
+          p.style.left = Math.random() * 100 + '%';
+          p.style.width = (Math.random() * 4 + 2) + 'px';
+          p.style.height = p.style.width;
+          p.style.animationDelay = Math.random() * 10 + 's';
+          p.style.animationDuration = (Math.random() * 10 + 6) + 's';
+          particlesContainer.appendChild(p);
+        }
+      }
+
+      // Messages SVG
+      const messages = [
+        { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>', text: 'Initialisation des modules' },
+        { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>', text: 'Chargement des composants' },
+        { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>', text: 'Préparation de l\'interface' },
+        { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>', text: 'Connexion sécurisée' },
+        { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6M4 5h16a2 2 0 012 2v1M4 5L2 7l2 2 M20 5l2 2-2 2"/></svg>', text: 'Synchronisation des données' },
+        { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>', text: 'Optimisation des performances' },
+        { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>', text: 'Finalisation' },
+        { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>', text: 'Bienvenue sur votre espace' }
+      ];
+
+      let msgIndex = 0;
+      const msgContainer = document.getElementById('loadingMessages');
+      if (msgContainer) {
+        setInterval(() => {
+          msgIndex = (msgIndex + 1) % messages.length;
+          msgContainer.innerHTML = `<span class="message-badge">${messages[msgIndex].icon} ${messages[msgIndex].text}</span>`;
+        }, 1300);
+      }
+
+      // Gestion de la progression
+      let progress = 0;
+      let isAngularReady = false;
+      let isProgressComplete = false;
+      let hasLoaderFaded = false;
+      
+      const progressEl = document.getElementById('progressPercent');
+      const fillBar = document.querySelector('.progress-fill');
+      const preloader = document.getElementById('preloader');
+      
+      function fadeOutLoader() {
+        if (hasLoaderFaded) return;
+        hasLoaderFaded = true;
+        if (preloader) {
+          preloader.classList.add('fade-out');
+          setTimeout(() => preloader.remove(), 800);
+        }
+      }
+      
+      function checkAndFadeOut() {
+        if (isProgressComplete && isAngularReady && !hasLoaderFaded) {
+          fadeOutLoader();
+        }
+      }
+      
+      // Progression
+      const interval = setInterval(() => {
+        if (progress < 100) {
+          progress += Math.random() * 8 + 3;
+          if (progress > 100) progress = 100;
+          if (progressEl) progressEl.textContent = Math.floor(progress) + '%';
+          if (fillBar) fillBar.style.width = progress + '%';
+          if (progress >= 100) {
+            clearInterval(interval);
+            isProgressComplete = true;
+            checkAndFadeOut();
+          }
+        }
+      }, 250);
+      
+      // Détection Angular
+      const checkAngular = setInterval(() => {
+        const appRoot = document.querySelector('app-root');
+        if (appRoot && appRoot.children && appRoot.children.length > 0) {
+          clearInterval(checkAngular);
+          isAngularReady = true;
+          checkAndFadeOut();
+        }
+      }, 100);
+      
+      // Fallback 10 secondes
+      setTimeout(() => {
+        if (!hasLoaderFaded) {
+          isProgressComplete = true;
+          isAngularReady = true;
+          checkAndFadeOut();
+        }
+      }, 10000);
+    })();
+  </script>
+
+
+  <!-- <script>
+  (function() {
+    // Particules
+    const particlesContainer = document.getElementById('particles');
+    if (particlesContainer) {
+      for (let i = 0; i < 45; i++) {
+        const p = document.createElement('div');
+        p.classList.add('particle');
+        p.style.left = Math.random() * 100 + '%';
+        p.style.width = (Math.random() * 4 + 2) + 'px';
+        p.style.height = p.style.width;
+        p.style.animationDelay = Math.random() * 10 + 's';
+        p.style.animationDuration = (Math.random() * 10 + 6) + 's';
+        particlesContainer.appendChild(p);
+      }
+    }
+
+    // Messages SVG
+    const messages = [
+      { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>', text: 'Initialisation des modules' },
+      { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>', text: 'Chargement des composants' },
+      { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>', text: 'Préparation de l\'interface' },
+      { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>', text: 'Connexion sécurisée' },
+      { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6M4 5h16a2 2 0 012 2v1M4 5L2 7l2 2 M20 5l2 2-2 2"/></svg>', text: 'Synchronisation des données' },
+      { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>', text: 'Optimisation des performances' },
+      { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>', text: 'Finalisation' },
+      { icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>', text: 'Bienvenue sur votre espace' }
+    ];
+
+    let msgIndex = 0;
+    const msgContainer = document.getElementById('loadingMessages');
+    if (msgContainer) {
+      setInterval(() => {
+        msgIndex = (msgIndex + 1) % messages.length;
+        msgContainer.innerHTML = `<span class="message-badge">${messages[msgIndex].icon} ${messages[msgIndex].text}</span>`;
+      }, 1300);
+    }
+
+    // Gestion de la progression
+    let progress = 0;
+    let isAngularReady = false;
+    let isProgressComplete = false;
+    let hasLoaderFaded = false;
+    
+    const progressEl = document.getElementById('progressPercent');
+    const fillBar = document.querySelector('.progress-fill');
+    const preloader = document.getElementById('preloader');
+    
+    function fadeOutLoader() {
+      if (hasLoaderFaded) return;
+      hasLoaderFaded = true;
+      if (preloader) {
+        preloader.classList.add('fade-out');
+        setTimeout(() => preloader.remove(), 800);
+      }
+    }
+    
+    function checkAndFadeOut() {
+      if (isProgressComplete && isAngularReady && !hasLoaderFaded) {
+        fadeOutLoader();
+      }
+    }
+    
+    // Progression
+    const interval = setInterval(() => {
+      if (progress < 100) {
+        progress += Math.random() * 8 + 3;
+        if (progress > 100) progress = 100;
+        if (progressEl) progressEl.textContent = Math.floor(progress) + '%';
+        if (fillBar) fillBar.style.width = progress + '%';
+        if (progress >= 100) {
+          clearInterval(interval);
+          isProgressComplete = true;
+          checkAndFadeOut();
+        }
+      }
+    }, 250);
+    
+    // Détection Angular
+    const checkAngular = setInterval(() => {
+      const appRoot = document.querySelector('app-root');
+      if (appRoot && appRoot.children && appRoot.children.length > 0) {
+        clearInterval(checkAngular);
+        isAngularReady = true;
+        checkAndFadeOut();
+      }
+    }, 100);
+    
+    // Fallback 10 secondes
+    setTimeout(() => {
+      if (!hasLoaderFaded) {
+        isProgressComplete = true;
+        isAngularReady = true;
+        checkAndFadeOut();
+      }
+    }, 10000);
+  })();
+</script> -->
+
+
+  <!-- <script>
+    (function() {
+      // Génération des particules
+      const particlesContainer = document.getElementById('particles');
+      if (particlesContainer) {
+        for (let i = 0; i < 45; i++) {
+          const p = document.createElement('div');
+          p.classList.add('particle');
+          p.style.left = Math.random() * 100 + '%';
+          p.style.width = (Math.random() * 4 + 2) + 'px';
+          p.style.height = p.style.width;
+          p.style.animationDelay = Math.random() * 10 + 's';
+          p.style.animationDuration = (Math.random() * 10 + 6) + 's';
+          particlesContainer.appendChild(p);
+        }
+      }
+
+      // Messages dynamiques avec SVG icons
+      const messages = [
+        { 
+          icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>', 
+          text: 'Initialisation des modules' 
+        },
+        { 
+          icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>', 
+          text: 'Chargement des composants' 
+        },
+        { 
+          icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>', 
+          text: 'Préparation de l\'interface' 
+        },
+        { 
+          icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>', 
+          text: 'Connexion sécurisée' 
+        },
+        { 
+          icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6M4 5h16a2 2 0 012 2v1M4 5L2 7l2 2 M20 5l2 2-2 2"/></svg>', 
+          text: 'Synchronisation des données' 
+        },
+        { 
+          icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>', 
+          text: 'Optimisation des performances' 
+        },
+        { 
+          icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>', 
+          text: 'Finalisation' 
+        },
+        { 
+          icon: '<svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>', 
+          text: 'Bienvenue sur votre espace' 
+        }
+      ];
+
+      let msgIndex = 0;
+      const msgContainer = document.getElementById('loadingMessages');
+      if (msgContainer) {
+        setInterval(() => {
+          msgIndex = (msgIndex + 1) % messages.length;
+          msgContainer.innerHTML = `<span class="message-badge">${messages[msgIndex].icon} ${messages[msgIndex].text}</span>`;
+        }, 1300);
+      }
+
+      // Progression
+      let progress = 0;
+      const progressEl = document.getElementById('progressPercent');
+      const interval = setInterval(() => {
+        if (progress < 100) {
+          progress += Math.random() * 12 + 3;
+          if (progress > 100) progress = 100;
+          if (progressEl) progressEl.textContent = Math.floor(progress) + '%';
+        } else {
+          clearInterval(interval);
+          const checkAngular = setInterval(() => {
+            const appRoot = document.querySelector('app-root');
+            if (appRoot && appRoot.children.length > 1) {
+              clearInterval(checkAngular);
+              setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                  preloader.classList.add('fade-out');
+                  setTimeout(() => preloader.remove(), 800);
+                }
+              }, 500);
+            }
+          }, 100);
+        }
+      }, 200);
+
+      // Fallback sécurité
+      setTimeout(() => {
+        const preloader = document.getElementById('preloader');
+        if (preloader && !preloader.classList.contains('fade-out')) {
+          preloader.classList.add('fade-out');
+          setTimeout(() => preloader.remove(), 800);
+        }
+      }, 8000);
+    })();
+  </script> -->
+
+  <!-- <script>
+    (function() {
+      // Génération des particules
+      const particlesContainer = document.getElementById('particles');
+      if (particlesContainer) {
+        for (let i = 0; i < 45; i++) {
+          const p = document.createElement('div');
+          p.classList.add('particle');
+          p.style.left = Math.random() * 100 + '%';
+          p.style.width = (Math.random() * 4 + 2) + 'px';
+          p.style.height = p.style.width;
+          p.style.animationDelay = Math.random() * 10 + 's';
+          p.style.animationDuration = (Math.random() * 10 + 6) + 's';
+          particlesContainer.appendChild(p);
+        }
+      }
+
+      // Messages dynamiques
+      const messages = [
+        { icon: '🕌', text: 'Initialisation des modules' },
+        { icon: '📦', text: 'Chargement des composants' },
+        { icon: '🎨', text: 'Préparation de l\'interface' },
+        { icon: '🔗', text: 'Connexion sécurisée' },
+        { icon: '📊', text: 'Synchronisation des données' },
+        { icon: '✨', text: 'Optimisation des performances' },
+        { icon: '🌟', text: 'Finalisation' },
+        { icon: '🎉', text: 'Bienvenue sur votre espace' }
+      ];
+      let msgIndex = 0;
+      const msgContainer = document.getElementById('loadingMessages');
+      if (msgContainer) {
+        setInterval(() => {
+          msgIndex = (msgIndex + 1) % messages.length;
+          msgContainer.innerHTML = `<span class="message-badge"><i>${messages[msgIndex].icon}</i> ${messages[msgIndex].text}</span>`;
+        }, 1300);
+      }
+
+      // Progression
+      let progress = 0;
+      const progressEl = document.getElementById('progressPercent');
+      const interval = setInterval(() => {
+        if (progress < 100) {
+          progress += Math.random() * 12 + 3;
+          if (progress > 100) progress = 100;
+          if (progressEl) progressEl.textContent = Math.floor(progress) + '%';
+        } else {
+          clearInterval(interval);
+          const checkAngular = setInterval(() => {
+            const appRoot = document.querySelector('app-root');
+            if (appRoot && appRoot.children.length > 1) {
+              clearInterval(checkAngular);
+              setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                  preloader.classList.add('fade-out');
+                  setTimeout(() => preloader.remove(), 800);
+                }
+              }, 500);
+            }
+          }, 100);
+        }
+      }, 200);
+
+      // Fallback sécurité
+      setTimeout(() => {
+        const preloader = document.getElementById('preloader');
+        if (preloader && !preloader.classList.contains('fade-out')) {
+          preloader.classList.add('fade-out');
+          setTimeout(() => preloader.remove(), 800);
+        }
+      }, 8000);
+    })();
+  </script> -->
+
+
 </body>
 </html>

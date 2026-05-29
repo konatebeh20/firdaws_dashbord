@@ -38,9 +38,15 @@ export class AppSidebarComponent {
     // {
     //   section: 'Navigation',
     //   icon: `<i class="bi bi-moon-stars-fill"></i>`,
-    //   name: 'Event',
-    //   path: '/calendar',
+    //   name: 'Annonce',
+    //   path: '/annonces',
     // },
+    {
+      section: 'Communication',
+      icon: `<i class="bi bi-megaphone-fill"></i>`,
+      name: 'Annonces',
+      path: '/annonces',
+    },
     {
       section: 'Navigation',
       icon: `<i class="bi bi-clock-fill"></i>`,
@@ -53,12 +59,31 @@ export class AppSidebarComponent {
       name: 'Événements',
       path: '/events',
     },
+    // {
+    //   section: 'Navigation',
+    //   icon: `<i class="bi bi-moon-stars-fill"></i>`,
+    //   name: 'Event',
+    //   path: '/calendar',
+    // },
     {
-      section: 'Communication',
-      icon: `<i class="bi bi-megaphone-fill"></i>`,
-      name: 'Annonces',
-      path: '/annonces',
+      section: 'Gestion',
+      icon: `<i class="bi bi-file-earmark-text-fill"></i>`,
+      name: 'Documents',
+      path: '/documents',
     },
+    // {
+    //   section: 'Gestion',
+    //   icon: `<i class="bi bi-file-earmark-text-fill"></i>`,
+    //   name: 'Formations',
+    //   path: '/formations',
+    // },
+    {
+      section: 'Gestion',
+      icon: `<i class="bi bi-camera-reels-fill"></i>`,
+      name: 'Vidéos',
+      path: '/videos',
+    },
+    
     {
       section: 'Communication',
       icon: `<i class="bi bi-people-fill"></i>`,
@@ -71,29 +96,19 @@ export class AppSidebarComponent {
       name: 'Donations',
       path: '/donations',
     },
-    {
-      section: 'Gestion',
-      icon: `<i class="bi bi-file-earmark-text-fill"></i>`,
-      name: 'Documents',
-      path: '/documents',
-    },
-    {
-      section: 'Gestion',
-      icon: `<i class="bi bi-camera-reels-fill"></i>`,
-      name: 'Vidéos',
-      path: '/videos',
-    },
-    {
-      section: 'Gestion',
-      icon: `<i class="bi bi-shield-lock-fill"></i>`,
-      name: 'Admins',
-      path: '/admins',
-    },
+    
+    
+    // {
+    //   section: 'Gestion',
+    //   icon: `<i class="bi bi-shield-lock-fill"></i>`,
+    //   name: 'Users',
+    //   path: '/admins',
+    // },
     {
       section: 'Gestion',
       icon: `<i class="bi bi-gear-fill"></i>`,
       name: 'Settings',
-      path: '/form-elements',
+      path: '/settings',
     },
   ];
 
