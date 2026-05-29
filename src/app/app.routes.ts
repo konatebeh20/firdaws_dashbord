@@ -14,21 +14,18 @@ import { AvatarElementComponent } from './pages/ui-elements/avatar-element/avata
 import { BadgesComponent } from './pages/ui-elements/badges/badges.component';
 import { ButtonsComponent } from './pages/ui-elements/buttons/buttons.component';
 import { ImagesComponent } from './pages/ui-elements/images/images.component';
-import { VideosComponent } from './pages/videos/videos.component';
+import { VideosComponent as UIVideosComponent } from './pages/ui-elements/videos/videos.component';
 import { SignInComponent } from './pages/auth-pages/sign-in/sign-in.component';
 import { SignUpComponent } from './pages/auth-pages/sign-up/sign-up.component';
 import { CalenderComponent } from './pages/calender/calender.component';
 import { PrayerTimesComponent } from './pages/prayer-times/prayer-times.component';
-
-import { AnnoncesComponent } from './pages/annonces/annonces.component';
-import { EventsComponent } from './pages/events/events.component';
 import { DocumentsComponent } from './pages/documents/documents.component';
-import { PrayerComponent } from './pages/prayer/prayer.component';
-import { DonsComponent } from './pages/dons/dons.component';
-import { UsersComponent } from './pages/users/users.component';
-import { SettingsComponent } from './pages/settings/settings.component';
-
-
+import { EventsComponent } from './pages/events/events.component';
+import { VideosComponent } from './pages/videos/videos.component';
+import { QuizComponent } from './pages/quiz/quiz.component';
+import { SupportComponent } from './pages/support/support.component';
+import { DonationsComponent } from './pages/donations/donations.component';
+import { AnnoncesComponent } from './pages/annonces/annonces.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -44,6 +41,11 @@ export const routes: Routes = [
         title: 'Tableau de bord - Mosquée Cité Bel Aire',
       },
       {
+        path:'calendar',
+        component:CalenderComponent,
+        title:'Calendrier - Mosquée Cité Bel Aire'
+      },
+      {
         path:'prayer-times',
         component:PrayerTimesComponent,
         title:'Horaires des Prières - Mosquée Cité Bel Aire'
@@ -51,12 +53,7 @@ export const routes: Routes = [
       {
         path:'events',
         component:EventsComponent,
-        title:'Événements / Calendrier - Mosquée Cité Bel Aire'
-      },
-      {
-        path:'documents',
-        component:DocumentsComponent,
-        title:'Documents - Mosquée Cité Bel Aire'
+        title:'Événements - Mosquée Cité Bel Aire'
       },
       {
         path:'annonces',
@@ -65,19 +62,18 @@ export const routes: Routes = [
       },
       {
         path:'fideles',
-        component:PrayerComponent,
+        component:ProfileComponent,
         title:'Fidèles - Mosquée Cité Bel Aire'
       },
       {
         path:'donations',
-        component:DonsComponent,
+        component:DonationsComponent,
         title:'Donations - Mosquée Cité Bel Aire'
       },
-      
       {
-        path:'formations',
-        component:BasicTablesComponent,
-        title:'Formations - Mosquée Cité Bel Aire'
+        path:'documents',
+        component:DocumentsComponent,
+        title:'Documents - Mosquée Cité Bel Aire'
       },
       {
         path:'videos',
@@ -85,8 +81,18 @@ export const routes: Routes = [
         title:'Vidéos - Mosquée Cité Bel Aire'
       },
       {
+        path:'quiz',
+        component:QuizComponent,
+        title:'Quiz Islamique - Mosquée Cité Bel Aire'
+      },
+      {
+        path:'support',
+        component:SupportComponent,
+        title:'Support & Aide - Mosquée Cité Bel Aire'
+      },
+      {
         path:'admins',
-        component:UsersComponent,
+        component:ProfileComponent,
         title:'Admins - Mosquée Cité Bel Aire'
       },
       {
@@ -95,83 +101,80 @@ export const routes: Routes = [
         title:'Profil - Mosquée Cité Bel Aire'
       },
       {
-        path:'settings',
-        component:SettingsComponent,
+        path:'form-elements',
+        component:FormElementsComponent,
         title:'Paramètres - Mosquée Cité Bel Aire'
       },
-      // {
-      //   path:'form-elements',
-      //   component:FormElementsComponent,
-      //   title:'Paramètres - Mosquée Cité Bel Aire'
-      // },
       {
         path:'basic-tables',
         component:BasicTablesComponent,
-        title:'Angular Basic Tables Dashboard | TailAdmin - Angular Admin Dashboard Template'
+        title:'Tables - Mosquée Cité Bel Aire'
       },
       {
         path:'blank',
         component:BlankComponent,
-        title:'Angular Blank Dashboard | TailAdmin - Angular Admin Dashboard Template'
+        title:'Page vide - Mosquée Cité Bel Aire'
       },
-      // support tickets
       {
         path:'invoice',
         component:InvoicesComponent,
-        title:'Angular Invoice Details Dashboard | TailAdmin - Angular Admin Dashboard Template'
+        title:'Factures - Mosquée Cité Bel Aire'
       },
       {
         path:'line-chart',
         component:LineChartComponent,
-        title:'Angular Line Chart Dashboard | TailAdmin - Angular Admin Dashboard Template'
+        title:'Graphique linéaire - Mosquée Cité Bel Aire'
       },
       {
         path:'bar-chart',
         component:BarChartComponent,
-        title:'Angular Bar Chart Dashboard | TailAdmin - Angular Admin Dashboard Template'
+        title:'Graphique en barres - Mosquée Cité Bel Aire'
       },
       {
         path:'alerts',
         component:AlertsComponent,
-        title:'Angular Alerts Dashboard | TailAdmin - Angular Admin Dashboard Template'
+        title:'Alertes - Mosquée Cité Bel Aire'
       },
       {
         path:'avatars',
         component:AvatarElementComponent,
-        title:'Angular Avatars Dashboard | TailAdmin - Angular Admin Dashboard Template'
+        title:'Avatars - Mosquée Cité Bel Aire'
       },
       {
         path:'badge',
         component:BadgesComponent,
-        title:'Angular Badges Dashboard | TailAdmin - Angular Admin Dashboard Template'
+        title:'Badges - Mosquée Cité Bel Aire'
       },
       {
         path:'buttons',
         component:ButtonsComponent,
-        title:'Angular Buttons Dashboard | TailAdmin - Angular Admin Dashboard Template'
+        title:'Boutons - Mosquée Cité Bel Aire'
       },
       {
         path:'images',
         component:ImagesComponent,
-        title:'Angular Images Dashboard | TailAdmin - Angular Admin Dashboard Template'
+        title:'Images - Mosquée Cité Bel Aire'
+      },
+      {
+        path:'ui-videos',
+        component:UIVideosComponent,
+        title:'Vidéos UI - Mosquée Cité Bel Aire'
       },
     ]
   },
-  // auth pages
   {
     path:'signin',
     component:SignInComponent,
-    title:'Angular Sign In Dashboard | TailAdmin - Angular Admin Dashboard Template'
+    title:'Connexion - Mosquée Cité Bel Aire'
   },
   {
     path:'signup',
     component:SignUpComponent,
-    title:'Angular Sign Up Dashboard | TailAdmin - Angular Admin Dashboard Template'
+    title:'Inscription - Mosquée Cité Bel Aire'
   },
-  // error pages
   {
     path:'**',
     component:NotFoundComponent,
-    title:'Angular NotFound Dashboard | TailAdmin - Angular Admin Dashboard Template'
+    title:'Page non trouvée - Mosquée Cité Bel Aire'
   },
 ];

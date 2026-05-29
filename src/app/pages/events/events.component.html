@@ -1,184 +1,152 @@
-<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-  <!-- Titre de la page comme dans Annonces -->
-  <div class="p-4 border-b border-gray-200 dark:border-gray-800">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Événements</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400">Gérez les événements et le calendrier de la mosquée</p>
-      </div>
-      <button
-        (click)="openModal()"
-        class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
-      >
-        <i class="bi bi-plus-lg"></i>
-        Nouvel événement
-      </button>
+<app-page-breadcrumb pageTitle="Événements" />
+
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div>
+      <h2 class="text-xl font-bold text-gray-800 dark:text-white">Événements à venir</h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ upcomingEvents.length }} événement(s) programmé(s)</p>
     </div>
+    <button (click)="openCreateModal()"
+      class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white text-sm font-medium rounded-xl hover:bg-emerald-700 transition-colors">
+      <i class="bi bi-plus-lg"></i> Nouvel événement
+    </button>
   </div>
 
-  <div class="custom-calendar p-4">
-    <full-calendar #calendar [options]="calendarOptions"></full-calendar>
-  </div>
+  <!-- Loading -->
+  @if (isLoading) {
+    <div class="flex items-center justify-center py-16">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600"></div>
+    </div>
+  }
 
-  <app-modal
-    [isOpen]="isOpen"
-    (close)="closeModal()"
-    className="max-w-[700px] p-6 lg:p-10"
-  >
-    <div class="flex flex-col px-2 overflow-y-auto custom-scrollbar">
-      <div>
-        <h5 class="mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-2xl">
-          {{ selectedEvent ? 'Modifier l\'événement' : 'Ajouter un événement' }}
-        </h5>
-        <p class="text-sm text-gray-500 dark:text-gray-400">
-          Planifiez vos événements religieux et communautaires
-        </p>
+  @if (!isLoading) {
+    <!-- Upcoming Events -->
+    @if (upcomingEvents.length === 0) {
+      <div class="text-center py-16 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
+        <i class="bi bi-calendar-x text-5xl text-gray-300 dark:text-gray-600"></i>
+        <p class="mt-4 text-gray-500 dark:text-gray-400">Aucun événement à venir</p>
       </div>
-      
-      <div class="mt-8">
-        <!-- Event Title -->
-        <div class="mb-6">
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            Titre de l'événement <span class="text-red-500">*</span>
-          </label>
-          <input
-            id="event-title"
-            type="text"
-            [(ngModel)]="eventTitle"
-            placeholder="Entrez le titre de l'événement"
-            class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
-          />
-        </div>
-
-        <!-- Location -->
-         <div class="mb-6">
-  <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-    Lieu
-  </label>
-  <input
-    type="text"
-    [(ngModel)]="eventLocation"
-    placeholder="Ex: Mosquée, Salle polyvalente..."
-    class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
-  />
-</div>
-
-        <!-- Event Type - Version Mosquée -->
-        <div class="mb-6">
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            Type d'événement <span class="text-red-500">*</span>
-          </label>
-          <select
-            [(ngModel)]="eventType"
-            class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
-          >
-            <option value="" disabled>Sélectionner le type d'événement</option>
-            <option value="priere">Prière 🕌</option>
-            <option value="cours">Cours 📖</option>
-            <option value="conference">Conférence 🎙️</option>
-            <option value="iftar">Iftar 🍽️</option>
-            <option value="aid">Aïd ⭐</option>
-            <option value="autre">Autre 📌</option>
-          </select>
-        </div>
-
-        <!-- Event Description -->
-        <div class="mb-6">
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            Description
-          </label>
-          <textarea
-            [(ngModel)]="eventDescription"
-            rows="3"
-            placeholder="Entrez la description de l'événement"
-            class="dark:bg-dark-900 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
-          ></textarea>
-        </div>
-
-        <!-- Date and Time Row -->
-        <div class="grid grid-cols-1 gap-6 mb-6 sm:grid-cols-2">
-          <!-- Start Date -->
-          <div>
-            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-              Date de début <span class="text-red-500">*</span>
-            </label>
-            <input
-              type="datetime-local"
-              [(ngModel)]="eventStartDate"
-              class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
-            />
+    } @else {
+      <div class="space-y-4">
+        @for (event of upcomingEvents; track event.id) {
+          <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 hover:shadow-md transition-shadow">
+            <div class="flex items-start justify-between">
+              <div class="flex gap-4">
+                <div class="flex-shrink-0 w-14 h-14 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex flex-col items-center justify-center">
+                  <span class="text-xs font-medium text-emerald-600">{{ event.date | date:'MMM' }}</span>
+                  <span class="text-lg font-bold text-emerald-700 dark:text-emerald-400 leading-tight">{{ event.date | date:'dd' }}</span>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-gray-800 dark:text-white">{{ event.title }}</h3>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ event.description }}</p>
+                  <div class="flex items-center gap-3 mt-2 text-xs text-gray-400">
+                    @if (event.time) {
+                      <span class="flex items-center gap-1"><i class="bi bi-clock"></i> {{ formatTime(event.time) }}</span>
+                    }
+                    @if (event.location) {
+                      <span class="flex items-center gap-1"><i class="bi bi-geo-alt"></i> {{ event.location }}</span>
+                    }
+                    <span [ngClass]="getCategoryColor(event.category)" class="px-2 py-0.5 rounded-full text-xs font-medium">{{ event.category }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-emerald-600 font-medium">J-{{ getDaysUntil(event.date) }}</span>
+                <button (click)="deleteEvent(event)" class="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
           </div>
+        }
+      </div>
+    }
 
-          <!-- End Date -->
-          <div>
-            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-              Date de fin <span class="text-red-500">*</span>
-            </label>
-            <input
-              type="datetime-local"
-              [(ngModel)]="eventEndDate"
-              class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
-            />
-          </div>
-        </div>
+    <!-- Past Events Toggle -->
+    @if (pastEvents.length > 0) {
+      <div class="pt-4">
+        <button (click)="togglePastEvents()"
+          class="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors">
+          <i class="bi" [ngClass]="showPastEvents ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+          Consulter l'historique ({{ pastEvents.length }})
+        </button>
 
-        <!-- Event Color -->
-        <div class="mb-6">
-          <label class="block mb-4 text-sm font-medium text-gray-700 dark:text-gray-400">
-            Couleur de l'événement
-          </label>
-          <div class="flex flex-wrap items-center gap-4 sm:gap-5">
-            @for (entry of (calendarsEvents | keyvalue); track $index) {
-              <div class="n-chk">
-                <div class="form-check form-check-inline" [class]="'form-check-' + entry.value">
-                  <label
-                    class="flex items-center text-sm text-gray-700 form-check-label dark:text-gray-400"
-                    [for]="'modal' + entry.key"
-                  >
-                    <span class="relative">
-                      <input
-                        class="sr-only form-check-input"
-                        type="radio"
-                        name="event-level"
-                        [value]="entry.key"
-                        [id]="'modal' + entry.key"
-                        [(ngModel)]="eventLevel"
-                      />
-                      <span
-                        class="rounded-full flex items-center justify-center w-5 h-5 mr-2 border border-gray-300 box dark:border-gray-700"
-                      >
-                        <span
-                          class="h-2 w-2 rounded-full bg-white"
-                          [class.block]="eventLevel === entry.key"
-                          [class.hidden]="eventLevel !== entry.key"
-                        ></span>
-                      </span>
-                    </span>
-                    {{ entry.key }}
-                  </label>
+        @if (showPastEvents) {
+          <div class="mt-4 space-y-3">
+            @for (event of pastEvents; track event.id) {
+              <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 p-4 opacity-70">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <h4 class="font-medium text-gray-600 dark:text-gray-400">{{ event.title }}</h4>
+                    <p class="text-xs text-gray-400 mt-1">{{ formatDate(event.date) }}</p>
+                  </div>
+                  <span class="text-xs px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-500 rounded-full">Passé</span>
                 </div>
               </div>
             }
           </div>
+        }
+      </div>
+    }
+  }
+</div>
+
+<!-- Create Event Modal -->
+@if (showCreateModal) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" (click)="closeCreateModal()">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-lg p-6" (click)="$event.stopPropagation()">
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-6">Créer un événement</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Titre</label>
+          <input type="text" [(ngModel)]="newEvent.title" placeholder="Nom de l'événement"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+          <textarea [(ngModel)]="newEvent.description" rows="3" placeholder="Description de l'événement..."
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date</label>
+            <input type="date" [(ngModel)]="newEvent.date"
+              class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Heure</label>
+            <input type="time" [(ngModel)]="newEvent.time"
+              class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Lieu</label>
+          <input type="text" [(ngModel)]="newEvent.location" placeholder="Lieu de l'événement"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Catégorie</label>
+          <select [(ngModel)]="newEvent.category"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <option value="general">Général</option>
+            <option value="priere">Prière</option>
+            <option value="formation">Formation</option>
+            <option value="social">Social</option>
+            <option value="conference">Conférence</option>
+          </select>
         </div>
       </div>
-
-      <div class="flex items-center gap-3 mt-6 modal-footer sm:justify-end">
-        <button
-          (click)="closeModal()"
-          type="button"
-          class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 sm:w-auto"
-        >
-          Fermer
+      <div class="flex justify-end gap-3 mt-6">
+        <button (click)="closeCreateModal()"
+          class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300">
+          Annuler
         </button>
-        <button
-          (click)="handleAddOrUpdateEvent()"
-          type="button"
-          class="btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
-        >
-          {{ selectedEvent ? 'Mettre à jour' : 'Ajouter' }}
+        <button (click)="createEvent()" [disabled]="!newEvent.title || !newEvent.date"
+          class="px-4 py-2.5 text-sm font-medium text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 disabled:opacity-50">
+          Créer
         </button>
       </div>
     </div>
-  </app-modal>
-</div>
+  </div>
+}

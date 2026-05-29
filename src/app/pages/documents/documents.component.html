@@ -1,322 +1,160 @@
-<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-  
-  <!-- Header -->
-  <div class="p-4 border-b border-gray-200 dark:border-gray-800">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Documents</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400">Bibliothèque de la mosquée</p>
-      </div>
-      <button
-        (click)="openModal()"
-        *ngIf="activeTab === 'mes-documents'"
-        class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
-      >
-        <i class="bi bi-file-earmark-plus-fill"></i>
-        Ajouter document
-      </button>
-    </div>
+<app-page-breadcrumb pageTitle="Documents" />
 
-    <!-- Tabs -->
-    <div class="flex gap-1 mt-4">
-      <button
-        (click)="activeTab = 'mes-documents'"
-        [class.bg-brand-500]="activeTab === 'mes-documents'"
-        [class.text-white]="activeTab === 'mes-documents'"
-        [class.text-gray-500]="activeTab !== 'mes-documents'"
-        class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-      >
-        <i class="bi bi-folder2-open"></i>
-        Mes Documents
-      </button>
-      <button
-        (click)="activeTab = 'bibliotheque'"
-        [class.bg-brand-500]="activeTab === 'bibliotheque'"
-        [class.text-white]="activeTab === 'bibliotheque'"
-        [class.text-gray-500]="activeTab !== 'bibliotheque'"
-        class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-      >
-        <i class="bi bi-book"></i>
-        Bibliothèque
-      </button>
-      <button
-        (click)="activeTab = 'quiz'"
-        [class.bg-brand-500]="activeTab === 'quiz'"
-        [class.text-white]="activeTab === 'quiz'"
-        [class.text-gray-500]="activeTab !== 'quiz'"
-        class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-      >
-        <i class="bi bi-patch-question"></i>
-        Mes Quiz ({{ mesQuiz.length }})
-      </button>
-    </div>
-  </div>
-
-  <div class="p-4">
-
-    <!-- ── TAB 1 : MES DOCUMENTS ── -->
-    <div *ngIf="activeTab === 'mes-documents'">
-      <div *ngIf="isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div *ngFor="let i of [1,2,3]" class="rounded-xl border border-gray-200 bg-white p-4 animate-pulse">
-          <div class="flex items-start gap-3">
-            <div class="w-12 h-12 rounded-lg bg-gray-200"></div>
-            <div class="flex-1"><div class="h-4 w-32 bg-gray-200 rounded mb-2"></div><div class="h-3 w-24 bg-gray-200 rounded"></div></div>
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="!isLoading">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div *ngFor="let d of mesDocuments" class="group rounded-xl border border-gray-200 bg-white p-4 hover:shadow-md transition-all hover:-translate-y-0.5">
-            <div class="flex items-start gap-3">
-              <div class="flex items-center justify-center w-12 h-12 rounded-lg shrink-0"
-                [class.bg-red-100]="getTypeColor(d.type) === 'red'"
-                [class.bg-blue-100]="getTypeColor(d.type) === 'blue'"
-                [class.bg-green-100]="getTypeColor(d.type) === 'green'"
-                [class.bg-orange-100]="getTypeColor(d.type) === 'orange'"
-                [class.bg-purple-100]="getTypeColor(d.type) === 'purple'">
-                <i [class]="'bi ' + getTypeIcon(d.type)" class="text-xl"
-                  [class.text-red-500]="getTypeColor(d.type) === 'red'"
-                  [class.text-blue-500]="getTypeColor(d.type) === 'blue'"
-                  [class.text-green-500]="getTypeColor(d.type) === 'green'"
-                  [class.text-orange-500]="getTypeColor(d.type) === 'orange'"
-                  [class.text-purple-500]="getTypeColor(d.type) === 'purple'"></i>
-              </div>
-              <div class="flex-1 min-w-0">
-                <h4 class="text-sm font-semibold text-gray-800 truncate">{{ d.title }}</h4>
-                <p *ngIf="d.description" class="text-xs text-gray-500 mb-2 line-clamp-2">{{ d.description }}</p>
-                <div class="flex items-center gap-2 text-xs text-gray-400">
-                  <i class="bi bi-calendar"></i><span>{{ d.date }}</span>
-                  <span *ngIf="d.size">• {{ d.size }}</span>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-              <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">{{ d.type }}</span>
-              <div class="flex gap-1">
-                <button (click)="downloadDocument(d)" class="p-1.5 text-gray-400 hover:text-brand-600 rounded-lg" title="Télécharger"><i class="bi bi-download"></i></button>
-                <button (click)="editDocument(d)" class="p-1.5 text-gray-400 hover:text-blue-600 rounded-lg" title="Modifier"><i class="bi bi-pencil-square"></i></button>
-                <button (click)="deleteDocument(d.id)" class="p-1.5 text-gray-400 hover:text-red-600 rounded-lg" title="Supprimer"><i class="bi bi-trash3"></i></button>
-                <button (click)="generateQuiz(d)" class="p-1.5 text-gray-400 hover:text-amber-500 rounded-lg" title="Générer un quiz" [disabled]="isGeneratingQuiz === d.id">
-                  <i class="bi" [class.bi-stars]="isGeneratingQuiz !== d.id" [class.bi-arrow-repeat]="isGeneratingQuiz === d.id" [class.animate-spin]="isGeneratingQuiz === d.id"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div *ngIf="mesDocuments.length === 0" class="text-center py-12">
-          <i class="bi bi-folder2-open text-5xl text-gray-300"></i>
-          <p class="mt-3 text-gray-500">Aucun document personnel</p>
-          <button (click)="openModal()" class="mt-3 inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white">Ajouter le premier</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── TAB 2 : BIBLIOTHÈQUE ── -->
-    <div *ngIf="activeTab === 'bibliotheque'">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <div class="bg-gray-50 rounded-lg p-3 text-center"><span class="text-2xl font-bold text-brand-600">{{ bibliotheque.length }}</span><p class="text-xs text-gray-500 mt-1">Total</p></div>
-        <div class="bg-gray-50 rounded-lg p-3 text-center"><span class="text-2xl font-bold text-red-500">{{ getBiblioByType('PDF').length }}</span><p class="text-xs text-gray-500 mt-1">PDF</p></div>
-        <div class="bg-gray-50 rounded-lg p-3 text-center"><span class="text-2xl font-bold text-blue-500">{{ getBiblioByType('DOC').length + getBiblioByType('DOCX').length }}</span><p class="text-xs text-gray-500 mt-1">Word</p></div>
-        <div class="bg-gray-50 rounded-lg p-3 text-center"><span class="text-2xl font-bold text-purple-500">{{ getBiblioByType('PPT').length }}</span><p class="text-xs text-gray-500 mt-1">PowerPoint</p></div>
-      </div>
-
-      <div class="flex flex-wrap gap-2 mb-4">
-        <button *ngFor="let type of documentTypes" (click)="filterType = filterType === type ? '' : type"
-          [class.bg-brand-500]="filterType === type" [class.text-white]="filterType === type"
-          [class.bg-gray-100]="filterType !== type" class="px-3 py-1 text-xs font-medium rounded-full transition-colors">{{ type }}</button>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div *ngFor="let d of filteredBibliotheque" class="group rounded-xl border border-gray-200 bg-white p-4 hover:shadow-md transition-all">
-          <div class="flex items-start gap-3">
-            <div class="flex items-center justify-center w-12 h-12 rounded-lg shrink-0"
-              [class.bg-red-100]="getTypeColor(d.type) === 'red'"
-              [class.bg-blue-100]="getTypeColor(d.type) === 'blue'"
-              [class.bg-green-100]="getTypeColor(d.type) === 'green'"
-              [class.bg-orange-100]="getTypeColor(d.type) === 'orange'"
-              [class.bg-purple-100]="getTypeColor(d.type) === 'purple'">
-              <i [class]="'bi ' + getTypeIcon(d.type)" class="text-xl"
-                [class.text-red-500]="getTypeColor(d.type) === 'red'"
-                [class.text-blue-500]="getTypeColor(d.type) === 'blue'"
-                [class.text-green-500]="getTypeColor(d.type) === 'green'"
-                [class.text-orange-500]="getTypeColor(d.type) === 'orange'"
-                [class.text-purple-500]="getTypeColor(d.type) === 'purple'"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-              <h4 class="text-sm font-semibold text-gray-800 truncate">{{ d.title }}</h4>
-              <p *ngIf="d.description" class="text-xs text-gray-500 mb-2 line-clamp-2">{{ d.description }}</p>
-              <div class="flex items-center gap-2 text-xs text-gray-400"><i class="bi bi-calendar"></i><span>{{ d.date }}</span><span *ngIf="d.size">• {{ d.size }}</span></div>
-            </div>
-          </div>
-          <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-            <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">{{ d.type }}</span>
-            <div class="flex gap-1">
-              <button (click)="downloadDocument(d)" class="p-1.5 text-gray-400 hover:text-brand-600 rounded-lg" title="Télécharger"><i class="bi bi-download"></i></button>
-              <button (click)="generateQuiz(d)" class="p-1.5 text-gray-400 hover:text-amber-500 rounded-lg" title="Générer un quiz" [disabled]="isGeneratingQuiz === d.id">
-                <i class="bi" [class.bi-stars]="isGeneratingQuiz !== d.id" [class.bi-arrow-repeat]="isGeneratingQuiz === d.id" [class.animate-spin]="isGeneratingQuiz === d.id"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="filteredBibliotheque.length === 0" class="text-center py-12">
-        <i class="bi bi-book text-5xl text-gray-300"></i><p class="mt-3 text-gray-500">Aucun document dans la bibliothèque</p>
-      </div>
-    </div>
-
-    <!-- ── TAB 3 : MES QUIZ ── -->
-
-    <div *ngIf="activeTab === 'quiz'">
-  
-  <!-- Aucun quiz -->
-  <div *ngIf="mesQuiz.length === 0" class="text-center py-16">
-    <i class="bi bi-patch-question text-6xl text-gray-300"></i>
-    <h4 class="mt-4 text-lg font-semibold text-gray-700">Quiz islamiques</h4>
-    <p class="mt-2 text-sm text-gray-500">Générez un quiz à partir d'un document pour tester vos connaissances</p>
-    <button (click)="activeTab = 'mes-documents'" class="mt-4 inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white">
-      <i class="bi bi-stars"></i> Générer un quiz
+<div class="space-y-6">
+  <!-- Tabs -->
+  <div class="flex items-center gap-2 border-b border-gray-200 dark:border-gray-700">
+    <button (click)="setTab('mes-documents')"
+      class="px-4 py-3 text-sm font-medium border-b-2 transition-colors"
+      [class]="activeTab === 'mes-documents' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400'">
+      <i class="bi bi-folder-fill mr-2"></i>Mes Documents
+    </button>
+    <button (click)="setTab('bibliotheque')"
+      class="px-4 py-3 text-sm font-medium border-b-2 transition-colors"
+      [class]="activeTab === 'bibliotheque' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400'">
+      <i class="bi bi-book-fill mr-2"></i>Bibliothèque
+    </button>
+    <button (click)="setTab('quiz')"
+      class="px-4 py-3 text-sm font-medium border-b-2 transition-colors"
+      [class]="activeTab === 'quiz' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400'">
+      <i class="bi bi-patch-question-fill mr-2"></i>Mes Quiz
     </button>
   </div>
 
-  <!-- Liste des quiz disponibles -->
-  <div *ngIf="!activeQuiz && mesQuiz.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div *ngFor="let quiz of mesQuiz" class="rounded-xl border border-gray-200 bg-white p-4 hover:shadow-md transition-all">
-      <div class="flex items-start justify-between">
-        <div class="flex-1">
-          <!-- ✅ Correction: utiliser 'title' au lieu de 'quiz_title' -->
-          <h4 class="font-semibold text-gray-800">{{ quiz.title }}</h4>
-          <!-- ✅ Correction: utiliser 'document_title' au lieu de 'documentTitle' -->
-          <p class="text-xs text-gray-500 mt-1">Basé sur: {{ quiz.document_title }}</p>
-          <div class="flex items-center gap-2 mt-2">
-            <!-- ✅ Correction: enlever le ? car questions existe toujours -->
-            <span class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">{{ quiz.questions.length || 0 }} questions</span>
-            <span *ngIf="quiz.score > 0" class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Score: {{ quiz.score }}%</span>
-            <!-- ✅ Correction: utiliser 'created_at' au lieu de 'createdAt' -->
-            <span class="text-xs text-gray-400">{{ quiz.created_at | date:'dd/MM/yyyy' }}</span>
+  <!-- Search + Upload bar -->
+  @if (activeTab !== 'quiz') {
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+      <div class="relative flex-1">
+        <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        <input type="text" [(ngModel)]="searchQuery" placeholder="Rechercher un document..."
+          class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
+      </div>
+      @if (activeTab === 'mes-documents') {
+        <button (click)="openUploadModal()"
+          class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white text-sm font-medium rounded-xl hover:bg-emerald-700 transition-colors">
+          <i class="bi bi-cloud-upload"></i> Ajouter
+        </button>
+      }
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (isLoading) {
+    <div class="flex items-center justify-center py-16">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600"></div>
+    </div>
+  }
+
+  <!-- Documents Grid -->
+  @if (!isLoading && activeTab !== 'quiz') {
+    @if (filteredDocuments.length === 0) {
+      <div class="text-center py-16">
+        <i class="bi bi-folder2-open text-5xl text-gray-300 dark:text-gray-600"></i>
+        <p class="mt-4 text-gray-500 dark:text-gray-400">Aucun document trouvé</p>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        @for (doc of filteredDocuments; track doc.id) {
+          <div class="group relative bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 hover:shadow-lg transition-shadow cursor-pointer"
+               (click)="openDocument(doc)">
+            <div class="flex items-start justify-between">
+              <i class="bi text-3xl" [ngClass]="getFileIcon(doc.file_type)"></i>
+              <button (click)="toggleFavorite(doc); $event.stopPropagation()"
+                class="text-gray-400 hover:text-yellow-500 transition-colors">
+                <i class="bi" [ngClass]="doc.is_favorite ? 'bi-star-fill text-yellow-500' : 'bi-star'"></i>
+              </button>
+            </div>
+            <h3 class="mt-3 font-semibold text-gray-800 dark:text-white text-sm line-clamp-2">{{ doc.title }}</h3>
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-2">{{ doc.description }}</p>
+            <div class="mt-3 flex items-center justify-between text-xs text-gray-400">
+              <span>{{ formatDate(doc.created_at) }}</span>
+              <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-full">{{ doc.file_type || 'Fichier' }}</span>
+            </div>
           </div>
+        }
+      </div>
+    }
+  }
+
+  <!-- Quiz Tab Content -->
+  @if (activeTab === 'quiz') {
+    <div class="text-center py-16">
+      <i class="bi bi-patch-question text-5xl text-emerald-500"></i>
+      <h3 class="mt-4 text-lg font-semibold text-gray-800 dark:text-white">Accéder aux Quiz</h3>
+      <p class="mt-2 text-gray-500 dark:text-gray-400">Testez vos connaissances en Islam</p>
+      <a routerLink="/quiz"
+        class="mt-4 inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors font-medium">
+        <i class="bi bi-play-fill"></i> Commencer un Quiz
+      </a>
+    </div>
+  }
+</div>
+
+<!-- PDF Reader Modal -->
+@if (selectedDoc) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" (click)="closeReader()">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden" (click)="$event.stopPropagation()">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="font-semibold text-gray-800 dark:text-white truncate">{{ selectedDoc.title }}</h3>
+        <button (click)="closeReader()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+          <i class="bi bi-x-lg text-gray-500"></i>
+        </button>
+      </div>
+      <div class="flex-1 overflow-hidden">
+        @if (pdfUrl) {
+          <iframe [src]="pdfUrl" class="w-full h-full border-0"></iframe>
+        } @else {
+          <div class="flex items-center justify-center h-full">
+            <p class="text-gray-500">Aperçu non disponible</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Upload Modal -->
+@if (showUploadModal) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" (click)="closeUploadModal()">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-lg p-6" (click)="$event.stopPropagation()">
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-6">Ajouter un document</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Titre</label>
+          <input type="text" [(ngModel)]="uploadForm.title" placeholder="Nom du document"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
         </div>
-        <div class="flex gap-1">
-          <button (click)="startQuiz(quiz)" class="p-2 text-brand-600 hover:bg-brand-50 rounded-lg" title="Commencer">
-            <i class="bi bi-play-fill"></i>
-          </button>
-          <button (click)="deleteQuiz(quiz.id)" class="p-2 text-red-500 hover:bg-red-50 rounded-lg" title="Supprimer">
-            <i class="bi bi-trash3"></i>
-          </button>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+          <textarea [(ngModel)]="uploadForm.description" rows="3" placeholder="Description optionnelle..."
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Catégorie</label>
+          <select [(ngModel)]="uploadForm.category"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <option value="general">Général</option>
+            <option value="library">Bibliothèque</option>
+            <option value="quran">Coran</option>
+            <option value="hadith">Hadith</option>
+            <option value="fiqh">Fiqh</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fichier</label>
+          <input type="file" (change)="onFileSelected($event)" accept=".pdf,.doc,.docx,.xlsx,.pptx,.jpg,.png"
+            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 dark:text-gray-400" />
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Quiz actif -->
-  <div *ngIf="activeQuiz && !quizFinished" class="bg-white rounded-xl border border-gray-200 p-6">
-    <div class="mb-4 flex justify-between items-center">
-      <!-- ✅ Correction: utiliser 'title' -->
-      <h3 class="font-semibold text-gray-800">{{ activeQuiz.title }}</h3>
-      <button (click)="resetQuiz()" class="text-sm text-gray-500 hover:text-gray-700">✕ Quitter</button>
-    </div>
-    
-    <!-- Barre de progression -->
-    <div class="mb-4">
-      <div class="flex justify-between text-sm text-gray-500 mb-2">
-        <span>Question {{ currentQuestionIndex + 1 }}/{{ activeQuiz.questions.length || 0 }}</span>
-        <span>Progression: {{ ((currentQuestionIndex) / (activeQuiz.questions.length || 1)) * 100 }}%</span>
-      </div>
-      <div class="w-full bg-gray-200 rounded-full h-2">
-        <div class="bg-brand-500 h-2 rounded-full" [style.width.%]="((currentQuestionIndex) / (activeQuiz.questions.length || 1)) * 100"></div>
+      <div class="flex justify-end gap-3 mt-6">
+        <button (click)="closeUploadModal()"
+          class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300">
+          Annuler
+        </button>
+        <button (click)="uploadDocument()" [disabled]="!uploadForm.title || !uploadForm.file"
+          class="px-4 py-2.5 text-sm font-medium text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed">
+          Téléverser
+        </button>
       </div>
     </div>
-    
-    <!-- Question -->
-    <div class="mb-6">
-      <p class="text-lg font-medium text-gray-800">{{ activeQuiz.questions[currentQuestionIndex]?.question }}</p>
-    </div>
-    
-    <!-- Options -->
-    <div class="space-y-3">
-      <button *ngFor="let opt of activeQuiz.questions[currentQuestionIndex]?.options" 
-              (click)="answerQuestion(opt)"
-              class="w-full text-left p-3 rounded-lg border border-gray-200 hover:border-brand-500 hover:bg-brand-50 transition-all">
-        {{ opt }}
-      </button>
-    </div>
   </div>
-
-  <!-- Résultat du quiz -->
-  <div *ngIf="activeQuiz && quizFinished" class="bg-white rounded-xl border border-gray-200 p-6 text-center">
-    <div class="text-6xl mb-4">{{ activeQuiz.score >= 70 ? '🏆' : '📚' }}</div>
-    <h3 class="text-2xl font-bold text-gray-800 mb-2">Quiz terminé !</h3>
-    <p class="text-gray-600 mb-4">Votre score: <span class="text-3xl font-bold text-brand-600">{{ activeQuiz.score }}%</span></p>
-    <div class="bg-gray-50 rounded-lg p-4 mb-4 text-left max-h-64 overflow-y-auto">
-      <p class="font-semibold mb-2">Résumé:</p>
-      <p *ngFor="let q of activeQuiz.questions; let i = index" class="text-sm py-1 border-b border-gray-100">
-        <span class="font-medium">{{ i+1 }}.</span> 
-        <!-- ✅ Correction: gestion sécurisée de la longueur -->
-        <span>{{ q.question.length > 60 ? (q.question | slice:0:60) + '...' : q.question }}</span><br>
-        <span [class.text-green-600]="userAnswers[i] === q.correct" [class.text-red-600]="userAnswers[i] !== q.correct" class="text-xs">
-          {{ userAnswers[i] === q.correct ? '✓ Correct' : '✗ Réponse correcte: ' + q.correct }}
-        </span>
-      </p>
-    </div>
-    <button (click)="resetQuiz()" class="px-6 py-2 bg-brand-500 text-white rounded-lg hover:bg-brand-600">Nouveau quiz</button>
-  </div>
-</div>
-
-
-  </div>
-</div>
-
-<!-- Toast -->
-<div *ngIf="toast" class="fixed top-4 right-4 z-50 flex items-center gap-3 rounded-xl px-5 py-3 text-sm font-medium text-white shadow-lg"
-  [class.bg-green-600]="toast.type === 'success'" [class.bg-red-500]="toast.type === 'error'">
-  <i class="bi text-lg" [class.bi-check-circle-fill]="toast.type === 'success'" [class.bi-x-circle-fill]="toast.type === 'error'"></i>
-  {{ toast.message }}
-</div>
-
-<!-- Modal Ajout/Modification Document -->
-<app-modal [isOpen]="isModalOpen" (close)="closeModal()" className="max-w-[600px] p-6">
-  <div class="space-y-4">
-    <h3 class="text-xl font-semibold text-gray-800">{{ isEditMode ? 'Modifier' : 'Ajouter' }} un document</h3>
-    
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Titre *</label>
-      <input type="text" [(ngModel)]="formData.title" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500">
-    </div>
-    
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-      <textarea [(ngModel)]="formData.description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500"></textarea>
-    </div>
-    
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-      <select [(ngModel)]="formData.type" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-        <option *ngFor="let t of documentTypes" [value]="t">{{ t }}</option>
-      </select>
-    </div>
-    
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Auteur</label>
-      <input type="text" [(ngModel)]="formData.author" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-    </div>
-    
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">URL du fichier (optionnel)</label>
-      <input type="text" [(ngModel)]="formData.file_url" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="https://...">
-    </div>
-    
-    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center" [class.border-brand-500]="isDragging" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
-      <i class="bi bi-cloud-upload text-3xl text-gray-400"></i>
-      <p class="mt-2 text-sm text-gray-500">Glissez-déposez un fichier ici ou <label class="text-brand-600 cursor-pointer">parcourez<input type="file" hidden (change)="onFileSelected($event)"></label></p>
-      <p class="text-xs text-gray-400 mt-1">PDF, DOC, DOCX, XLS, PPT, ZIP, JPG, PNG</p>
-      <div *ngIf="formData.file" class="mt-3 text-sm text-green-600"><i class="bi bi-check-circle"></i> {{ formData.file.name }}</div>
-    </div>
-    
-    <div class="flex justify-end gap-3 pt-4">
-      <button (click)="closeModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Annuler</button>
-      <button (click)="saveDocument()" class="px-4 py-2 bg-brand-500 text-white rounded-lg hover:bg-brand-600">Enregistrer</button>
-    </div>
-  </div>
-</app-modal>
+}

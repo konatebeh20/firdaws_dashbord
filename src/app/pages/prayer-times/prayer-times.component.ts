@@ -1,8 +1,22 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { PageBreadcrumbComponent } from '../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 
-import { PrayerTimeService, PrayerTime, PrayerTimingsResponse, UserLocation } from '../../shared/services/prayer-time/prayer-time.service';
+interface PrayerTime {
+  name: string;
+  arabic: string;
+  time: string;
+}
+
+interface AladhanTimings {
+  Fajr: string;
+  Dhuhr: string;
+  Asr: string;
+  Maghrib: string;
+  Isha: string;
+  [key: string]: string;
+}
 
 @Component({
   selector: 'app-prayer-times',
@@ -12,267 +26,160 @@ import { PrayerTimeService, PrayerTime, PrayerTimingsResponse, UserLocation } fr
   styleUrls: ['./prayer-times.component.css']
 })
 export class PrayerTimesComponent implements OnInit, OnDestroy {
+  prayerTimes: PrayerTime[] = [
+    { name: "Fajr", arabic: "\u0627\u0644\u0641\u062C\u0631", time: "05:30" },
+    { name: "Dhuhr", arabic: "\u0627\u0644\u0638\u0647\u0631", time: "13:30" },
+    { name: "Asr", arabic: "\u0627\u0644\u0639\u0635\u0631", time: "16:45" },
+    { name: "Maghrib", arabic: "\u0627\u0644\u0645\u063A\u0631\u0628", time: "19:15" },
+    { name: "Isha", arabic: "\u0627\u0644\u0639\u0634\u0627\u0621", time: "21:00" }
+  ];
 
-  prayerTimes: PrayerTime[] = [];
   nextPrayer: PrayerTime | null = null;
   nextPrayerTimeDiff = '';
-
+  locationCity = '';
+  locationCountry = '';
+  currentDate = '';
   isLoading = true;
-  errorMessage: string | null = null;
-  isDefaultLocation = false;
+  errorMsg = '';
+  private intervalId: ReturnType<typeof setInterval> | null = null;
 
-  // locationError = false;
-  // currentLocationName = "Mosquée Cité Bel Aire";
-  // locationInfo: string = 'Chargement...';
-
-  
-  locationLabel  = '';
-  locationQuarter = '';
-  hijriDate = '';
-  methodName = '';
-  
-  private intervalId: any;  
-
-  constructor(private prayerService: PrayerTimeService) {}
+  constructor(private readonly http: HttpClient) {}
 
   ngOnInit() {
-    this.loadPrayerTimes();
-  }
-
-   ngOnDestroy() {
-    if (this.intervalId) clearInterval(this.intervalId);
-  }
-
-  loadPrayerTimes() {
-    this.isLoading = true;
-    this.errorMessage = null;
-    this.isDefaultLocation = false;
-    if (this.intervalId) clearInterval(this.intervalId);
-
-    this.prayerService.loadPrayerData().subscribe({
-      next: data => this.applyData(data),
-      error: () => {
-        this.isDefaultLocation = true;
-        this.prayerService.loadFallbackData().subscribe({
-          next:  data => this.applyData(data),
-          error: ()   => {
-            this.isLoading = false;
-            this.errorMessage = 'Impossible de charger les horaires. Vérifiez votre connexion.';
-          }
-        });
-      }
+    const now = new Date();
+    this.currentDate = now.toLocaleDateString('fr-FR', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
-    
-    // if (navigator.geolocation) {
-    //   navigator.geolocation.getCurrentPosition(
-    //     (position) => {
-    //       const lat = position.coords.latitude;
-    //       const lng = position.coords.longitude;
-          
-    //       // 1. On récupère les horaires exactes au GPS (Quartier/Zone pris en compte)
-    //       this.prayerService.getPrayerTimesByCoords(lat, lng).subscribe({
-    //         next: (times) => {
-    //           this.prayerTimes = times;
-    //           this.updateNextPrayer();
-    //           this.isLoading = false;
-    //         },
-    //         error: () => this.initWithFallback()
-    //       });
-
-    //       // 2. En parallèle, on récupère le nom lisible de la commune/zone
-    //       this.prayerService.getLocationName(lat, lng).subscribe({
-    //         next: (name) => {
-    //           this.currentLocationName = name; // Affichera par exemple : "Cocody, Abidjan"
-    //         },
-    //         error: () => {
-    //           this.currentLocationName = "Votre Position";
-    //         }
-    //       });
-    //     },
-    //     (error) => {
-    //       this.locationError = true;
-    //       this.initWithFallback();
-    //     }
-    //   );
-    // } else {
-    //   this.initWithFallback();
-    // }
+    this.fetchPrayerTimesViaGeolocation();
   }
 
-   private applyData(data: { location: UserLocation; timings: PrayerTimingsResponse }) {
+  ngOnDestroy() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+  }
 
-    this.prayerTimes    = this.prayerService.formatPrayerTimes(data.timings);
-    this.locationLabel   = data.location.label;
-    this.locationQuarter = data.location.quarter || data.location.city || '';
-    this.methodName  = data.timings.data.meta.method?.name || '';
+  fetchPrayerTimesViaGeolocation() {
+    if (!navigator.geolocation) {
+      this.fetchPrayerTimesByCity('Abidjan', 'CI');
+      return;
+    }
 
-    const h = data.timings.data.date.hijri;
-    this.hijriDate = `${h.date} · ${h.month.ar} ${h.year}`;
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        this.fetchPrayerTimesByCoords(lat, lng);
+      },
+      () => {
+        this.fetchPrayerTimesByCity('Abidjan', 'CI');
+      },
+      { timeout: 5000 }
+    );
+  }
 
-    // this.hijriDate   = `${d.date.hijri.date} · ${d.date.hijri.month.ar} ${d.date.hijri.year}`;
+  fetchPrayerTimesByCoords(lat: number, lng: number) {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const yyyy = today.getFullYear();
 
-    // const t = data.timings.data.timings;
-    // const d = data.timings.data;
-    
-    this.isLoading   = false;
+    const url = `https://api.aladhan.com/v1/timings/${dd}-${mm}-${yyyy}?latitude=${lat}&longitude=${lng}&method=2`;
+
+    this.http.get<{ data: { timings: AladhanTimings; meta: { timezone: string } } }>(url)
+      .subscribe({
+        next: (res) => {
+          this.applyTimings(res.data.timings);
+          this.locationCity = res.data.meta.timezone.split('/').pop()?.replace(/_/g, ' ') || '';
+          this.isLoading = false;
+        },
+        error: () => {
+          this.errorMsg = 'Impossible de charger les horaires. Utilisation des horaires par défaut.';
+          this.isLoading = false;
+          this.updateNextPrayer();
+          this.startInterval();
+        }
+      });
+  }
+
+  fetchPrayerTimesByCity(city: string, country: string) {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const yyyy = today.getFullYear();
+
+    const url = `https://api.aladhan.com/v1/timingsByCity/${dd}-${mm}-${yyyy}?city=${city}&country=${country}&method=2`;
+
+    this.http.get<{ data: { timings: AladhanTimings } }>(url)
+      .subscribe({
+        next: (res) => {
+          this.applyTimings(res.data.timings);
+          this.locationCity = city;
+          this.locationCountry = country;
+          this.isLoading = false;
+        },
+        error: () => {
+          this.errorMsg = 'Impossible de charger les horaires. Utilisation des horaires par défaut.';
+          this.isLoading = false;
+          this.updateNextPrayer();
+          this.startInterval();
+        }
+      });
+  }
+
+  private applyTimings(timings: AladhanTimings) {
+    const map: { key: string; name: string; arabic: string }[] = [
+      { key: 'Fajr', name: 'Fajr', arabic: '\u0627\u0644\u0641\u062C\u0631' },
+      { key: 'Dhuhr', name: 'Dhuhr', arabic: '\u0627\u0644\u0638\u0647\u0631' },
+      { key: 'Asr', name: 'Asr', arabic: '\u0627\u0644\u0639\u0635\u0631' },
+      { key: 'Maghrib', name: 'Maghrib', arabic: '\u0627\u0644\u0645\u063A\u0631\u0628' },
+      { key: 'Isha', name: 'Isha', arabic: '\u0627\u0644\u0639\u0634\u0627\u0621' }
+    ];
+
+    this.prayerTimes = map.map(p => ({
+      name: p.name,
+      arabic: p.arabic,
+      time: timings[p.key].substring(0, 5)
+    }));
+
     this.updateNextPrayer();
+    this.startInterval();
+  }
 
+  private startInterval() {
+    if (this.intervalId) clearInterval(this.intervalId);
     this.intervalId = setInterval(() => this.updateNextPrayer(), 60000);
   }
 
   updateNextPrayer() {
-    if (!this.prayerTimes.length) return;
+    const now = new Date();
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+    let next = this.prayerTimes[0];
+    let nextMin = Infinity;
 
-    const { prayer, diff } = this.prayerService.getNextPrayer(this.prayerTimes);
-    this.nextPrayer       = prayer;
-    this.nextPrayerTimeDiff = this.prayerService.formatTimeDiff(diff);
+    for (const p of this.prayerTimes) {
+      const [h, m] = p.time.split(':').map(Number);
+      const pm = h * 60 + m;
+      if (pm > nowMin && pm < nextMin) {
+        next = p;
+        nextMin = pm;
+      }
+    }
 
-    // const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
-    // const { name, diff } = this.prayerTimesService.getNextPrayer(this.prayerTimes);
+    let diff = 0;
+    if (nextMin === Infinity) {
+      next = this.prayerTimes[0];
+      const [h, m] = next.time.split(':').map(Number);
+      const pm = h * 60 + m;
+      diff = (24 * 60 - nowMin) + pm;
+    } else {
+      diff = nextMin - nowMin;
+    }
 
-    // let next: PrayerTime | null = null;
-    // let minDiff = Infinity;
+    const hh = Math.floor(diff / 60);
+    const mm = diff % 60;
 
-    // for (const p of this.prayerTimes) {
-    //   const [h, m] = p.time.split(':').map(Number);
-    //   const diff = h * 60 + m - nowMin;
-    //   if (diff > 0 && diff < minDiff) { minDiff = diff; next = p; }
-    // }
-
-    // if (!next) {
-    //   next = this.prayerTimes[0];
-    //   const [h, m] = next.time.split(':').map(Number);
-    //   minDiff = 24 * 60 - nowMin + h * 60 + m;
-    // }
-
-    
-    // this.nextPrayer = this.prayerTimes.find(p => p.name === name) || null;
-    // // this.nextPrayer = next;
-    // this.nextPrayerTimeDiff = this.prayerTimesService.formatTimeDiff(diff);
-    // // this.nextPrayerTimeDiff = `${Math.floor(minDiff / 60)}h ${minDiff % 60}min`;
+    this.nextPrayer = next;
+    this.nextPrayerTimeDiff = `${hh}h ${mm}min`;
   }
-
-  refresh() {
-    this.loadPrayerTimes();
-  }
-
-  get todayDate(): string {
-    return new Date().toLocaleDateString('fr-FR', { 
-      weekday: 'long', 
-      day: 'numeric', 
-      month: 'long', 
-      year: 'numeric' 
-    });
-  }
-
-
-  // private initWithFallback() {
-  //   this.updateNextPrayer();
-  //   this.isLoading = false;
-  // }
-
-  // loadPrayerTimes() {
-  //   this.isLoading = true;
-  //   this.errorMessage = null;
-  //   this.isDefaultLocation = false;
-    
-  //   this.prayerTimesService.getPrayerTimes().subscribe({
-  //     next: data => this.applyData(data),
-  //     error: () => {
-  //       // Géoloc refusée ou échouée → fallback Abidjan
-  //       this.isDefaultLocation = true;
-  //       this.prayerService.loadFallbackData().subscribe({
-  //         next:  data  => this.applyData(data),
-  //         error: ()    => {
-  //           this.isLoading = false;
-  //           this.error = 'Impossible de charger les horaires. Vérifiez votre connexion.';
-  //         }
-  //       });
-  //     }
-  //   });
-
-  //   this.prayerTimesService.getPrayerTimes().subscribe({
-  //     next: (response: PrayerTimesResponse) => {
-  //       this.prayerTimes = this.prayerTimesService.formatPrayerTimes(response);
-        
-  //       // Extraire les infos de localisation
-  //       const meta = response.data.meta;
-  //       this.locationInfo = `${meta.latitude.toFixed(4)}°, ${meta.longitude.toFixed(4)}°`;
-        
-  //       this.updateNextPrayer();
-  //       this.startTimer();
-  //       this.isLoading = false;
-  //     },
-  //     error: (error) => {
-  //       console.error('Erreur chargement horaires:', error);
-  //       this.errorMessage = 'Impossible de charger les horaires. Vérifiez votre connexion.';
-  //       this.isLoading = false;
-        
-  //       // Fallback sur des horaires par défaut
-  //       this.setDefaultPrayerTimes();
-  //     }
-  //   });
-  // }
-
- 
-  // private clean(t: string): string { return t.split(' ')[0]; }
-
-  // setDefaultPrayerTimes() {
-  //   this.prayerTimes = [
-  //     { name: "Fajr", arabic: "الفجر", time: "05:30" },
-  //     { name: "Dhuhr", arabic: "الظهر", time: "13:30" },
-  //     { name: "Asr", arabic: "العصر", time: "16:45" },
-  //     { name: "Maghrib", arabic: "المغرب", time: "19:15" },
-  //     { name: "Isha", arabic: "العشاء", time: "21:00" }
-  //   ];
-  //   this.locationInfo = 'Abidjan (fallback)';
-  //   this.updateNextPrayer();
-  //   this.startTimer();
-  // }
-
-
-
-  // // updateNextPrayer() {
-  // //   const now = new Date();
-  // //   const nowMin = now.getHours() * 60 + now.getMinutes();
-  // //   let next = this.prayerTimes[0];
-  // //   let nextMin = Infinity;
-    
-  // //   for (let p of this.prayerTimes) {
-  // //     let [h, m] = p.time.split(':').map(Number);
-  // //     let pm = h * 60 + m;
-  // //     if (pm > nowMin && pm - nowMin < nextMin - nowMin) {
-  // //       next = p;
-  // //       nextMin = pm;
-  // //     }
-  // //   }
-    
-  // //   // If no prayer is left today, the next one is Fajr tomorrow
-  // //   let diff = 0;
-  // //   if (nextMin === Infinity) {
-  // //     next = this.prayerTimes[0];
-  // //     let [h, m] = next.time.split(':').map(Number);
-  // //     let pm = h * 60 + m;
-  // //     diff = (24 * 60 - nowMin) + pm;
-  // //   } else {
-  // //     diff = nextMin - nowMin;
-  // //   }
-    
-  // //   const hh = Math.floor(diff / 60);
-  // //   const mm = diff % 60;
-    
-  // //   this.nextPrayer = next;
-  // //   this.nextPrayerTimeDiff = `${hh}h ${mm}min`;
-  // // }
-
-
-  // startTimer() {
-  //   if (this.intervalId) {
-  //     clearInterval(this.intervalId);
-  //   }
-    
-  //   this.intervalId = setInterval(() => {
-  //     this.updateNextPrayer();
-  //   }, 60000); // Met à jour toutes les minutes
-  // }
 }
