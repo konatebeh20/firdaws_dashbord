@@ -1,0 +1,123 @@
+<app-page-breadcrumb pageTitle="Donations" />
+
+<div class="space-y-6">
+  <!-- Stats -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-5">
+      <p class="text-sm text-gray-500 dark:text-gray-400">Total des dons</p>
+      <p class="text-2xl font-bold text-emerald-600 mt-1">{{ formatAmount(totalDonations) }}</p>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-5">
+      <p class="text-sm text-gray-500 dark:text-gray-400">Nombre de donateurs</p>
+      <p class="text-2xl font-bold text-gray-800 dark:text-white mt-1">{{ donationCount }}</p>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex justify-end">
+    <button (click)="openCreateModal()"
+      class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white text-sm font-medium rounded-xl hover:bg-emerald-700 transition-colors">
+      <i class="bi bi-plus-lg"></i> Enregistrer un don
+    </button>
+  </div>
+
+  <!-- Loading -->
+  @if (isLoading) {
+    <div class="flex items-center justify-center py-16">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600"></div>
+    </div>
+  }
+
+  @if (!isLoading) {
+    @if (donations.length === 0) {
+      <div class="text-center py-16 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
+        <i class="bi bi-heart text-5xl text-gray-300 dark:text-gray-600"></i>
+        <p class="mt-4 text-gray-500 dark:text-gray-400">Aucun don enregistré</p>
+      </div>
+    } @else {
+      <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 dark:bg-gray-700/50">
+              <tr>
+                <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Donateur</th>
+                <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Montant</th>
+                <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Type</th>
+                <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Paiement</th>
+                <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Date</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+              @for (don of donations; track don.id) {
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                  <td class="px-5 py-4 font-medium text-gray-800 dark:text-white">{{ don.donor_name || 'Anonyme' }}</td>
+                  <td class="px-5 py-4 font-semibold text-emerald-600">{{ formatAmount(don.amount) }}</td>
+                  <td class="px-5 py-4">
+                    <span class="px-2 py-1 text-xs rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                      {{ getTypeLabel(don.type) }}
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 text-gray-500 dark:text-gray-400">
+                    <i class="bi mr-1" [ngClass]="getMethodIcon(don.payment_method)"></i>
+                    {{ don.payment_method || '-' }}
+                  </td>
+                  <td class="px-5 py-4 text-gray-400">{{ formatDate(don.created_at) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  }
+</div>
+
+<!-- Create Donation Modal -->
+@if (showCreateModal) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" (click)="closeCreateModal()">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-lg p-6" (click)="$event.stopPropagation()">
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-6">Enregistrer un don</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom du donateur</label>
+          <input type="text" [(ngModel)]="newDonation.donor_name" placeholder="Nom (ou Anonyme)"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Montant (FCFA)</label>
+          <input type="number" [(ngModel)]="newDonation.amount" placeholder="Montant"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type de don</label>
+          <select [(ngModel)]="newDonation.type"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <option value="sadaka">Sadaka</option>
+            <option value="zakat">Zakat</option>
+            <option value="projet">Projet mosquée</option>
+            <option value="general">Général</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mode de paiement</label>
+          <select [(ngModel)]="newDonation.payment_method"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <option value="mobile_money">Mobile Money</option>
+            <option value="visa">Carte Visa/Mastercard</option>
+            <option value="cash">Espèces</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex justify-end gap-3 mt-6">
+        <button (click)="closeCreateModal()"
+          class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300">
+          Annuler
+        </button>
+        <button (click)="createDonation()" [disabled]="!newDonation.amount"
+          class="px-4 py-2.5 text-sm font-medium text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 disabled:opacity-50">
+          Enregistrer
+        </button>
+      </div>
+    </div>
+  </div>
+}

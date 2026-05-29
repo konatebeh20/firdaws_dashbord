@@ -1,35 +1,53 @@
 <app-page-breadcrumb pageTitle="Horaires des Prières" />
 
 <div class="space-y-6">
-  <!-- Info banner showing the next prayer -->
   <div class="rounded-2xl bg-gradient-to-r from-emerald-800 to-teal-900 p-6 text-white shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div>
       <h2 class="text-xl font-bold">Mosquée Cité Bel Aire</h2>
-      <p class="text-sm text-white/70 mt-1">Espace d'affichage des horaires de prière</p>
+      <p class="text-sm text-white/70 mt-1">{{ currentDate }}</p>
+      @if (locationCity) {
+        <p class="text-sm text-white/80 mt-1 flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          {{ locationCity }} {{ locationCountry }}
+        </p>
+      }
     </div>
     <div class="md:text-right">
-      <p class="text-lg font-semibold flex items-center gap-2 md:justify-end">
-        <span>🕌 Prochaine prière :</span>
-        <span class="font-bold text-yellow-400">{{ nextPrayer?.name }}</span>
-      </p>
-      <p class="text-sm text-white/80 mt-1">dans {{ nextPrayerTimeDiff }}</p>
-    </div>
-  </div>
-
-  <!-- The Panel containing the grid of prayer times -->
-  <div class="panel">
-    <div class="panel-header text-gray-800 dark:text-white/90">
-      🕌 Horaires des prières aujourd'hui
-    </div>
-    
-    <div class="prayer-grid">
-      @for (p of prayerTimes; track p.name) {
-        <div class="prayer-card" [class.next-prayer]="p.name === nextPrayer?.name">
-          <div class="font-arabic font-bold text-gray-600 dark:text-gray-300" [class.!text-white]="p.name === nextPrayer?.name">{{ p.arabic }}</div>
-          <div class="font-medium text-lg text-gray-800 dark:text-white/80 mt-2" [class.!text-white]="p.name === nextPrayer?.name">{{ p.name }}</div>
-          <div class="text-3xl font-extrabold mt-3 text-gray-900 dark:text-white" [class.!text-white]="p.name === nextPrayer?.name">{{ p.time }}</div>
-        </div>
+      @if (nextPrayer) {
+        <p class="text-lg font-semibold flex items-center gap-2 md:justify-end">
+          <span>Prochaine prière :</span>
+          <span class="font-bold text-yellow-400">{{ nextPrayer.name }}</span>
+        </p>
+        <p class="text-sm text-white/80 mt-1">dans {{ nextPrayerTimeDiff }}</p>
       }
     </div>
   </div>
+
+  @if (errorMsg) {
+    <div class="rounded-xl bg-amber-50 border border-amber-200 p-4 text-amber-800 text-sm dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-300">
+      {{ errorMsg }}
+    </div>
+  }
+
+  @if (isLoading) {
+    <div class="flex items-center justify-center py-12">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600"></div>
+    </div>
+  } @else {
+    <div class="panel">
+      <div class="panel-header text-gray-800 dark:text-white/90">
+        Horaires des prières aujourd'hui
+      </div>
+
+      <div class="prayer-grid">
+        @for (p of prayerTimes; track p.name) {
+          <div class="prayer-card" [class.next-prayer]="p.name === nextPrayer?.name">
+            <div class="font-arabic font-bold text-gray-600 dark:text-gray-300" [class.!text-white]="p.name === nextPrayer?.name">{{ p.arabic }}</div>
+            <div class="font-medium text-lg text-gray-800 dark:text-white/80 mt-2" [class.!text-white]="p.name === nextPrayer?.name">{{ p.name }}</div>
+            <div class="text-3xl font-extrabold mt-3 text-gray-900 dark:text-white" [class.!text-white]="p.name === nextPrayer?.name">{{ p.time }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  }
 </div>

@@ -35,12 +35,6 @@ export class AppSidebarComponent {
       name: 'Dashboard',
       path: '/',
     },
-    // {
-    //   section: 'Navigation',
-    //   icon: `<i class="bi bi-moon-stars-fill"></i>`,
-    //   name: 'Event',
-    //   path: '/calendar',
-    // },
     {
       section: 'Navigation',
       icon: `<i class="bi bi-clock-fill"></i>`,
@@ -85,14 +79,26 @@ export class AppSidebarComponent {
     },
     {
       section: 'Gestion',
+      icon: `<i class="bi bi-patch-question-fill"></i>`,
+      name: 'Quiz',
+      path: '/quiz',
+    },
+    {
+      section: 'Gestion',
       icon: `<i class="bi bi-shield-lock-fill"></i>`,
       name: 'Admins',
       path: '/admins',
     },
     {
-      section: 'Gestion',
+      section: 'Support',
+      icon: `<i class="bi bi-headset"></i>`,
+      name: 'Aide & Support',
+      path: '/support',
+    },
+    {
+      section: 'Support',
       icon: `<i class="bi bi-gear-fill"></i>`,
-      name: 'Settings',
+      name: 'Paramètres',
       path: '/form-elements',
     },
   ];
