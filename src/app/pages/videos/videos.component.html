@@ -1,13 +1,81 @@
-<!-- PAGE VIDEOS -->
-<div id="videos-page" class="page">
-  <div class="panel">
-    <div class="panel-header">
-      <span class="panel-title">
-        <span class="panel-title-dot dot-o"></span>
-        Vidéos
-      </span>
-      <button class="action-link" id="addVideoBtn">+ Ajouter vidéo</button>
+<app-page-breadcrumb pageTitle="Vidéos" />
+
+<div class="space-y-6">
+  <!-- Search + Filters -->
+  <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+    <div class="relative flex-1">
+      <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Rechercher une vidéo..."
+        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
     </div>
-    <div id="videosList"></div>
+    <button (click)="showFavoritesOnly = !showFavoritesOnly"
+      class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl transition-colors"
+      [class]="showFavoritesOnly ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'">
+      <i class="bi" [ngClass]="showFavoritesOnly ? 'bi-star-fill' : 'bi-star'"></i>
+      Favoris
+    </button>
   </div>
+
+  <!-- Loading -->
+  @if (isLoading) {
+    <div class="flex items-center justify-center py-16">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600"></div>
+    </div>
+  }
+
+  @if (!isLoading) {
+    @if (filteredVideos.length === 0) {
+      <div class="text-center py-16">
+        <i class="bi bi-camera-reels text-5xl text-gray-300 dark:text-gray-600"></i>
+        <p class="mt-4 text-gray-500 dark:text-gray-400">Aucune vidéo trouvée</p>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        @for (video of filteredVideos; track video.id) {
+          <div class="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+               (click)="openVideo(video)">
+            <div class="relative aspect-video overflow-hidden">
+              <img [src]="video.thumbnail" [alt]="video.title"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                <div class="w-14 h-14 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <i class="bi bi-play-fill text-2xl text-gray-800 ml-1"></i>
+                </div>
+              </div>
+              <button (click)="toggleFavorite(video, $event)"
+                class="absolute top-3 right-3 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 hover:bg-white transition-colors">
+                <i class="bi text-lg" [ngClass]="video.is_favorite ? 'bi-star-fill text-yellow-500' : 'bi-star text-gray-500'"></i>
+              </button>
+            </div>
+            <div class="p-4">
+              <h3 class="font-semibold text-gray-800 dark:text-white text-sm line-clamp-2">{{ video.title }}</h3>
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-2">{{ video.description }}</p>
+              <p class="mt-2 text-xs text-gray-400">{{ formatDate(video.publishedAt) }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
 </div>
+
+<!-- Video Player Modal -->
+@if (selectedVideo) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" (click)="closePlayer()">
+    <div class="w-full max-w-4xl" (click)="$event.stopPropagation()">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-white font-semibold truncate pr-4">{{ selectedVideo.title }}</h3>
+        <button (click)="closePlayer()" class="p-2 text-white/70 hover:text-white transition-colors">
+          <i class="bi bi-x-lg text-xl"></i>
+        </button>
+      </div>
+      <div class="relative aspect-video rounded-2xl overflow-hidden bg-black">
+        @if (playerUrl) {
+          <iframe [src]="playerUrl" class="w-full h-full border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        }
+      </div>
+    </div>
+  </div>
+}
